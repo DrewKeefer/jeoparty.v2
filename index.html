@@ -5,12 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
     <title>Jeoparty</title>
 </head>
 
 <body>
 
-<div class="splash"></div>
+<div class="splash">
+    <h1>WELCOME TO</h1>
+    <img class="titlecard" src="titlecard.png">
+    <button id="load-id" class="load-game" onclick="loadGame()">LOAD GAME</button>
+</div>
 
 <div class="grid-container">
     <div class="category category-one">Catergory One</div>
