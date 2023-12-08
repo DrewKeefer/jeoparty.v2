@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <title>Jeoparty</title>
 </head>
@@ -14,9 +13,21 @@
 <body>
 
 <div class="splash">
-    <h1>WELCOME TO</h1>
+    <h1 id="splash-message">WELCOME TO</h1>
     <img class="titlecard" src="titlecard.png">
-    <button id="load-id" class="load-game" onclick="loadGame()">LOAD GAME</button>
+    <button id="load-id" class="load-game" onclick="loadButtonHandler()">LOAD GAME</button>
+</div>
+
+<div class="select-container">
+    <div class="season-container" id="season-list">
+    </div>
+    <div class="game-container" id="game-list">
+    </div>
+</div>
+
+<div class="clue-screen">
+    <p class="clue-clue">Subject of a 2003 film, his 1947 obituary said he fathered at least 100 & died of a heart attack at 14, at a california ranch.</p>
+    <button id="next" class="next-button">ANSWER</button>
 </div>
 
 <div class="grid-container">

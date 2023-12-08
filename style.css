@@ -17,6 +17,121 @@ h1{
     justify-self: center;
 }
 
+/* Game Selector Container */
+
+.select-container{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    background-color: #071277;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: .5fr 4fr;
+    gap: 1vw;
+}
+
+.season-container{
+    justify-self: stretch;
+    display: grid;
+    grid-column-start: 1;
+    grid-column-end: 1;
+    overflow: scroll;
+}
+
+.season-entry{
+    padding-right: 1vw;
+    text-align: end;
+    color: white;
+    font-size: 1.5vmax;
+    cursor:pointer;
+    background-color: transparent;
+    border: none;
+}
+
+.season-entry:hover{
+    color: #071277;
+    background-color: #FBA537;
+}
+
+
+.game-container{
+    overflow: scroll;
+}
+
+.game-info-container{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto;
+    color: white;
+    font-size: 1vmax;
+    cursor:pointer;
+    background-color: transparent;
+    border: none;
+}
+
+.game-info-container:hover{
+    color: #071277;
+    background-color: #FBA537;
+}
+
+.selected{
+    color: #071277;
+    background-color: #FBA537;
+}
+
+/* Clue Screen */
+
+.clue-screen{
+    position: fixed;
+    width: 99vw;
+    height: 98vh;
+    left: .5vw;
+    top: 1vh;
+    background-color: #071277;
+    z-index: 1;
+    display: none;
+}
+
+.clue-clue{
+    width: 75vw;
+    height: 75vh;
+    display: grid;
+    color: white;
+    font-size: 5vmax;
+    text-shadow: .4vmax .25vmax .1vmax black;
+    font-family: Georgia, serif;
+    text-transform: uppercase;
+    overflow: scroll;
+    align-items: center;
+    justify-self: center;
+    text-align: center;
+}
+
+.next-button{
+    position: fixed;
+    bottom: 5vh;
+    right: 40vw;
+    width: 20vw;
+    height: 7vh;
+    align-self: start;
+    justify-self: center;
+    font-family: Georgia, serif;
+    font-size: 2vmin;
+    color: white;
+    text-shadow: 5px 3px 1.5px black;
+    cursor:pointer;
+    background-color: transparent;
+    border: solid .3vmax white;
+}
+
+.next-button:hover{
+    color: #FBA537;
+    border: solid .3vmax #FBA537;
+}
+
+
 /* Slash Screen */
 
 .splash{
@@ -26,7 +141,7 @@ h1{
     padding: 0;
     margin: 0;
     background-color: #071277;
-    z-index: 1;
+    z-index: 2;
     display: grid;
     grid-template-columns: auto;
     grid-template-rows: 1fr 3fr 2fr;
@@ -143,4 +258,8 @@ h1{
 
 .question:hover{
     color:white;
+}
+
+.activated {
+    color: red;
 }
