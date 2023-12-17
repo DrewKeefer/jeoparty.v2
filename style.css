@@ -186,24 +186,11 @@ h1{
     height: 98vh;
     left: .5vw;
     top: 1vh;
-    overflow:auto;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-template-rows: repeat(6, 1fr);
-    justify-items: stretch;
-    align-items: stretch;
     gap: .5vmax;
     z-index: 0;
-}
-
-.grid-container > div{
-    background-color: #071277;
-}
-
-
-.category{
-    grid-row: 1;
-    margin: 0px 0px .25vmax 0px;
 }
 
 .one{
@@ -229,20 +216,66 @@ h1{
 
 /* Grid Elements */
 
+.category-container{
+    background-color: #071277;
+    grid-row: 1;
+    overflow: hidden;
+    
+    display: grid;
+    grid-template-columns: .1fr 1fr .1fr;
+    grid-template-rows: .1fr 1fr .1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+
+.comment-marker{
+    width: 1vw;
+    height: 2.5vh;
+    text-align: center;
+    font-size: 1vmax;
+    text-transform: uppercase;
+    font-family: Impact, sans-serif;
+    color: white;
+    display: grid;
+    border-left: solid .2vmax black;
+    border-bottom: solid .2vmax black;
+    grid-area: 1 / 4 / 1 / 4;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.comment-marker:hover + .comment {
+    display: grid;
+}
+
+.comment{
+    display: none;
+    font-size: 1.5vmax;
+    text-transform: uppercase;
+    font-family: Impact, sans-serif;
+    color: white;
+    text-shadow: 5px 3px 1.5px black;
+    grid-area: 1 / 1 / end / end;
+    text-align: center;
+    align-self: start;
+    justify-self: stretch;
+    z-index: 4;
+    background-color: #071277;
+    padding: 5px;
+}
+
 .category{
     font-size: 2vmax;
     text-transform: uppercase;
     font-family: Impact, sans-serif;
     color: white;
-    display: flex;
-    letter-spacing: .05rem;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 10px 2px;
-    grid-row: 1;
-    overflow: hidden;
     text-shadow: 5px 3px 1.5px black;
+    letter-spacing: .05rem;
+    grid-area: 1 / 1 / end / end;
+    text-align: center;
+    align-self: center;
+    justify-self: center;
+    padding: 3px;
 }
 
 .question{
@@ -254,6 +287,7 @@ h1{
     justify-content: center;
     align-items: center;
     cursor:pointer;
+    background-color: #071277;
 }
 
 .question:hover{

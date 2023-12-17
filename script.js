@@ -145,6 +145,20 @@ function setCategories(stateData){
     let allCategories = document.getElementsByClassName('category');
     for (let i = 0; i < allCategories.length; i++){
         allCategories[i].textContent = stateData.categories[i].name;
+        // Add comment element if present
+        if (stateData.categories[i].comments != ""){
+            console.log("adding comment things" )
+            // add html code
+            let marker = document.createElement("span");
+            marker.className = "comment-marker";
+            marker.innerHTML = "?";
+            let commentElement = document.createElement("span");
+            commentElement.className = "comment";
+            commentElement.innerHTML = stateData.categories[i].comments;
+
+            document.getElementsByClassName('category-container')[i].appendChild(marker);
+            document.getElementsByClassName('category-container')[i].appendChild(commentElement);
+        }
     };
 };
 
