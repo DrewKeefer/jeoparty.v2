@@ -1,6 +1,7 @@
 var gameData = {};
 var stateData = {};
-var gameState = 0;
+var gameState = 0; // 0 -- single jeopardy, 1 -- double jeopardy, 2 -- final jeopardy
+var clueState = 0;
 
 function loadButtonHandler(){
     if (gameState==0){
@@ -30,6 +31,7 @@ function mainLoad(){
         splashButton.textContent = 'GO';
     }
     else{ // final Jeopardy
+        clueState = 4;
         gameState++;
         stateData.categories = gameData.categories.slice(-1);
         stateData.clues = gameData.clues.slice(-1);
@@ -47,7 +49,7 @@ function mainLoad(){
         nextButton.onclick = (e) => {
             displayQuestion(0);
         };
-        return
+
     };
     addClickEventsToGridItems();
     setCategories(stateData);
@@ -97,7 +99,7 @@ async function displayGames(i){
         gameInfo.appendChild(gameTitle);
         gameInfo.appendChild(gameComments);
     }
-    addClickEventsToGameButtons()
+    addClickEventsToGameButtons();
 }
 
 // Add click events to game entry buttons
@@ -130,7 +132,7 @@ function addClickEventsToSeasonButtons() {
 };
 
 
-// Automatically add click events to all categories
+// Automatically add click events to all questoins
 function addClickEventsToGridItems() {
     let allQuestions = document.getElementsByClassName('question');
     for (let i = 0; i < allQuestions.length; i++) {
@@ -160,6 +162,7 @@ function setCategories(stateData){
             document.getElementsByClassName('category-container')[i].appendChild(commentElement);
         }
     };
+    clueState = 1; // 1 -- on question board
 };
 
 function displayQuestion(index) {
@@ -168,6 +171,7 @@ function displayQuestion(index) {
     document.getElementsByClassName('clue-screen')[0].style.display ='grid';
     jsonIndex = (index % 5) * 6 + Math.floor(index/5);
     document.getElementsByClassName('clue-clue')[0].textContent = stateData.clues[jsonIndex].clue;
+    clueState = 2; // 2 -- viewing question clue
     let nextButton = document.getElementById('next');
     nextButton.textContent = 'ANSWER';
     nextButton.onclick = (e) => {
@@ -177,33 +181,41 @@ function displayQuestion(index) {
 
 function displayAnswer(jsonIndex){
     document.getElementsByClassName('clue-clue')[0].innerHTML = stateData.clues[jsonIndex].answer;
+    clueState = 3; // 3 -- viewing question answer
     document.getElementById('next').innerHTML = 'BACK';
     document.getElementById('next').onclick = (e) =>{
-        document.getElementsByClassName('clue-screen')[0].style.display ='none';
-        // Check if all questions have been activated
-        if(document.getElementsByClassName('activated').length == 30){
-            if(gameState == 0){
-                engageDouble();
-            }
-            else if(gameState == 1){
-                gameState++
-                mainLoad();
-                return
-            }
-           
-        };
-        // Check if game is over
-        if (gameState == 3){ // if game over
-            document.getElementsByClassName('splash')[0].style.zIndex =10;
-            document.getElementsByClassName('splash')[0].style.display = 'grid';
-            document.getElementById('splash-message').textContent = 'THANKS FOR PLAYING';
-            let splashButton = document.getElementById('load-id');
-            splashButton.textContent = 'PLAY AGAIN';
-            splashButton.onclick = (e) => { // reset game
-                window.location.reload();
-            };
-        };
+        backButtonHander();
+    };
+}
+
+function backButtonHander(){
+    document.getElementsByClassName('clue-screen')[0].style.display ='none';
+    // Check if all questions have been activated
+    if(document.getElementsByClassName('activated').length == 30){
+        if(gameState == 0){
+            engageDouble();
+        }
+        else if(gameState == 1){
+            gameState++
+            mainLoad();
+            return
+        }
+        
     }
+    else{
+        clueState = 1; // returning to question board, so resetting clueState
+    };
+    // Check if game is over
+    if (gameState == 3){ // if game over
+        document.getElementsByClassName('splash')[0].style.zIndex =10;
+        document.getElementsByClassName('splash')[0].style.display = 'grid';
+        document.getElementById('splash-message').textContent = 'THANKS FOR PLAYING';
+        let splashButton = document.getElementById('load-id');
+        splashButton.textContent = 'PLAY AGAIN';
+        splashButton.onclick = (e) => { // reset game
+            window.location.reload();
+        };
+    };
 }
 
 // Double Jeopardy
@@ -219,12 +231,11 @@ function engageDouble(){
     });
     // Remove activated class from questions
     let activeQuestions = document.querySelectorAll('div.activated');
-    console.log(activeQuestions);
     activeQuestions.forEach((element) =>{
         element.classList.remove('activated');
     });
 
-    // Progress gameState and reload
+    // Progress gameState, prepare clueState, and reload
     gameState = 1;
     mainLoad(gameState);
 };
@@ -234,4 +245,106 @@ async function getJSON(url) {
     let response = await fetch(url);
     let data = await response.json();
     return data;
+};
+
+
+// Keyboard Navigation
+
+var position = { x: 0, y:0};
+var questionMap = [];
+
+$(document).ready(function () {
+    $('.grid-container').each(function () {
+        questionMap.push([]);
+        $('.question', this).each(function () {
+            questionMap[questionMap.length - 1].push($(this));
+        });
+    });
+    highlightCell();
+});
+
+$(window).on('keydown', function (e) {
+    if (e.keyCode === 37) {// left
+        moveLeft();}
+    else if (e.keyCode === 38){ // up
+        moveUp();}
+    else if (e.keyCode === 39){ // right
+        moveRight();}
+    else if (e.keyCode === 40){ // down
+        moveDown();}
+    else if (e.keyCode === 32){ // spacebar handler
+        spacebarHandler();}
+    else if (e.keyCode === 70){ // F key
+        fullScreenToggle();}; 
+    highlightCell();
+});
+
+function moveLeft() {
+    position.x-=5;
+    if (position.x < 0){
+        position.x+=5};
+};
+
+function moveUp() {
+    position.x--;
+    if (position.x < 0){
+        position.x = 0};
+};
+
+function moveRight() {
+    position.x+=5;
+    if (position.x >= questionMap[0].length){
+        position.x-=5};
+};
+
+function moveDown() {
+    position.x++;
+    if (position.x >= questionMap[0].length){
+        position.x = questionMap[0].length - 1};
+};
+
+function highlightCell() {
+    $('.question').removeClass('selected');
+    questionMap[position.y][position.x].addClass('selected');
+};
+
+function spacebarHandler(){
+    if (clueState === 4){ // 4 --- final Jeopardy
+        if(document.getElementsByClassName('splash')[0].style.display === 'grid'){ // if on splash screen
+            loadButtonHandler();
+        }
+        else{
+            clueState = 2;
+            displayQuestion(0);
+        };    
+    }
+    else if (document.getElementsByClassName('splash')[0].style.display === 'grid'){ // remove functionality of spacebar when splash screen is displayed and not final jeopardy
+        if(document.getElementById('load-id').innerHTML === 'GO'){
+            loadButtonHandler();    // unless splash screen is double jeopardy, then proceed
+            return;
+        }
+        else{
+            return
+        };
+    }
+    else if (clueState === 1){ // 1 --- viewing question board
+        displayQuestion(position.x);
+    }
+    else if (clueState === 2){ // 2 --- viewing question clue
+        displayAnswer(jsonIndex);
+    }
+    else if (clueState === 3){ // 3 --- viewing question answer
+        backButtonHander();
+    };
+};
+
+function fullScreenToggle(){
+    var elem = document.documentElement;
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
+      }
 }
