@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script defer src="script.js"></script>
+    <script defer src="buzzerScript.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
     <title>Jeoparty</title>
@@ -30,6 +30,9 @@
 
 <div class="clue-screen" style="display: none;">
     <p class="clue-clue"></p>
+    <div id="time-bar" class="round-time-bar" style="--duration: 10;">
+        <div></div>
+    </div>
     <button id="next" class="next-button">ANSWER</button>
 </div>
 

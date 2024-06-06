@@ -9,21 +9,21 @@ mainLoad()  -- based on gameState
 
 var gameData = {};
 var stateData = {};
-var isRandom = 0; // 0 for normal load, 1 for random game load
+var isRandom = 1; // 0 for normal load, 1 for random game load
 var gameState = 0; // 0 -- single jeopardy, 1 -- double jeopardy, 2 -- final jeopardy
 var clueState = 0;
+
+loadRandomHandler();
 
 function loadButtonHandler(){
     if (gameState==0){
         if (isRandom==1){
-            document.getElementById('random-id').remove();
-            document.getElementById('game-info-id').remove();
-            mainLoad();
             document.getElementsByClassName('splash')[0].style.zIndex = -10;
             document.getElementsByClassName('splash')[0].style.display = 'none';
+            mainLoad();
+            displayQuestion(0);
             return
         };
-        console.log('loadGameFunction')
         loadGame();
     }
     else {
@@ -41,11 +41,10 @@ async function loadRandomHandler(){
     if (gameData == null){
         console.log('NULL GAME');
     };
-    console.log(seasonRand,gameRand,gameData);
     if(document.getElementsByClassName('select-container').length != 0){
         document.getElementsByClassName('select-container')[0].remove();
     };
-    document.getElementById('game-info-id').innerHTML = gameData.gameTitle + "<br />" +gameData.gameComments;
+    loadButtonHandler();
 }
 
 function mainLoad(){
@@ -191,7 +190,6 @@ function setCategories(stateData){
         allCategories[i].textContent = stateData.categories[i].name;
         // Add comment element if present
         if (stateData.categories[i].comments != ""){
-            console.log("adding comment things" )
             // add html code
             let marker = document.createElement("span");
             marker.className = "comment-marker";
@@ -206,6 +204,7 @@ function setCategories(stateData){
         };
     };
     clueState = 1; // 1 -- on question board
+    
 };
 
 function displayQuestion(index) {
@@ -215,6 +214,19 @@ function displayQuestion(index) {
     jsonIndex = (index % 5) * 6 + Math.floor(index/5);
     document.getElementsByClassName('clue-clue')[0].textContent = stateData.clues[jsonIndex].clue;
     clueState = 2; // 2 -- viewing question clue
+
+    // BUZZER TIMING
+
+    // get duration based on amount of words in clue
+
+    let charNumber = ((stateData.clues[jsonIndex].clue).toString()).length;
+    let buzzerDuration = (60 * charNumber) / 775;
+    document.getElementById('time-bar').style.setProperty("--duration", buzzerDuration);
+
+    // (The third argument is optional)
+    var ticker = new AdjustingInterval(doWork, 100, buzzerDuration, doError);
+    ticker.start();
+
     let nextButton = document.getElementById('next');
     nextButton.textContent = 'ANSWER';
     nextButton.onclick = (e) => {
@@ -307,6 +319,8 @@ $(document).ready(function () {
 });
 
 $(window).on('keydown', function (e) {
+
+    // Navigation
     if (e.keyCode === 37) {// left
         moveLeft();}
     else if (e.keyCode === 38){ // up
@@ -318,9 +332,16 @@ $(window).on('keydown', function (e) {
     else if (e.keyCode === 32){ // spacebar handler
         spacebarHandler();}
     else if (e.keyCode === 70){ // F key
-        fullScreenToggle();}; 
+        fullScreenToggle();}
+    // BUZZING
+    else if (e.keyCode === 88){ // X key
+        buzzIn(88);};
     highlightCell();
 });
+
+function buzzIn(player) {
+    console.log(player + ' buzzed in');
+}
 
 function moveLeft() {
     position.x-=5;
@@ -396,13 +417,63 @@ function getRandomInt(min, max) {
     const minCeiled = Math.ceil(min);
     const maxFloored = Math.floor(max);
     return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
-  }
-  
-  function sleep(milliseconds) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-      if ((new Date().getTime() - start) > milliseconds){
-        break;
-      }
+}
+
+/**
+ * Self-adjusting interval to account for drifting
+ * 
+ * @param {function} workFunc  Callback containing the work to be done
+ *                             for each interval
+ * @param {int}      interval  Interval speed (in milliseconds)
+ * @param {int}      duration  Time that ticker should run
+ * @param {function} errorFunc (Optional) Callback to run if the drift
+ *                             exceeds interval
+ */
+function AdjustingInterval(workFunc, interval, duration, errorFunc) {
+
+    console.log(duration);
+    var that = this;
+    var expected, timeout;
+    this.interval = interval;
+
+    this.start = function() {
+        expected = Date.now() + this.interval;
+        timeout = setTimeout(step, this.interval);
     }
-  }
+
+    this.stop = function() {
+        clearTimeout(timeout);
+        justSomeNumber = 0;
+    }
+
+    function step() {
+        var drift = Date.now() - expected;
+        if (drift > that.interval) {
+            // You could have some default stuff here too...
+            if (errorFunc) errorFunc();
+        }
+        workFunc();
+        expected += that.interval;
+        timeout = setTimeout(step, Math.max(0, that.interval-drift));
+        if ((justSomeNumber/interval*10) >= duration){
+            console.log('time up!')
+            that.stop();
+        }
+    }
+}
+
+// For testing purposes, we'll just increment
+// this and send it out to the console.
+var justSomeNumber = 0;
+
+// Define the work to be done
+var doWork = function() {
+    ++justSomeNumber;
+};
+
+// Define what to do if something goes wrong
+var doError = function() {
+    console.warn('The drift exceeded the interval.');
+};
+
+
