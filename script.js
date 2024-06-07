@@ -7,11 +7,32 @@ mainLoad()  -- based on gameState
 
 */
 
+// Initializing global variables
+// #region GLOBAL VARIABLES
+
 var gameData = {};
 var stateData = {};
 var isRandom = 0; // 0 for normal load, 1 for random game load
 var gameState = 0; // 0 -- single jeopardy, 1 -- double jeopardy, 2 -- final jeopardy
 var clueState = 0;
+var nextButton = document.getElementById('next');
+nextButton.addEventListener("click", nextButtonHandler);
+var jsonIndex = 0;
+var playerArray = [65,66,88,89];
+var buzzArray = [,,,,];
+var buzzOrder = 0;
+
+
+// #endregion
+
+// Loading seasons/games/categories & adding event listeners to grid
+// #region LOADING ASSETS
+
+async function getJSON(url) {
+    let response = await fetch(url);
+    let data = await response.json();
+    return data;
+};
 
 function loadButtonHandler(){
     if (gameState==0){
@@ -23,7 +44,6 @@ function loadButtonHandler(){
             document.getElementsByClassName('splash')[0].style.display = 'none';
             return
         };
-        console.log('loadGameFunction')
         loadGame();
     }
     else {
@@ -41,55 +61,11 @@ async function loadRandomHandler(){
     if (gameData == null){
         console.log('NULL GAME');
     };
-    console.log(seasonRand,gameRand,gameData);
     if(document.getElementsByClassName('select-container').length != 0){
         document.getElementsByClassName('select-container')[0].remove();
     };
     document.getElementById('game-info-id').innerHTML = gameData.gameTitle + "<br />" +gameData.gameComments;
 }
-
-function mainLoad(){
-    console.log('loading')
-    // check which data to load
-    if (gameState == 0){ // single Jeopardy
-        stateData.categories = gameData.categories.slice(0,6);
-        stateData.clues = gameData.clues.slice(0,30);
-    }
-    else if (gameState == 1){ // double Jeopardy
-        stateData.categories = gameData.categories.slice(6,13);
-        stateData.clues = gameData.clues.slice(30,61);
-        // Display splash screen
-        document.getElementsByClassName('splash')[0].style.zIndex =10;
-        document.getElementsByClassName('splash')[0].style.display = 'grid';
-        document.getElementById('splash-message').textContent = 'DOUBLE';
-        let splashButton = document.getElementById('load-id');
-        splashButton.textContent = 'GO';
-    }
-    else{ // final Jeopardy
-        clueState = 4;
-        gameState++;
-        stateData.categories = gameData.categories.slice(-1);
-        stateData.clues = gameData.clues.slice(-1);
-        // Display splash screen
-        document.getElementsByClassName('splash')[0].style.zIndex =10;
-        document.getElementsByClassName('splash')[0].style.display = 'grid';
-        document.getElementById('splash-message').textContent = 'FINAL';
-        let splashButton = document.getElementById('load-id');
-        splashButton.textContent = 'LETS GO!';
-        // Display the category
-        document.getElementsByClassName('clue-screen')[0].style.display ='grid';
-        document.getElementsByClassName('clue-clue')[0].textContent = stateData.categories[0].name;
-        let nextButton = document.getElementById('next');
-        nextButton.textContent = 'QUESTION';
-        nextButton.onclick = (e) => {
-            displayQuestion(0);
-        };
-
-    };
-    addClickEventsToGridItems();
-    setCategories(stateData);
-};
-
 
 function loadGame(){
     // Create list of seasons
@@ -166,7 +142,6 @@ function addClickEventsToSeasonButtons() {
     }
 };
 
-
 // Automatically add click events to all questoins
 function addClickEventsToGridItems() {
     let allQuestions = document.getElementsByClassName('question');
@@ -208,30 +183,96 @@ function setCategories(stateData){
     clueState = 1; // 1 -- on question board
 };
 
+// #endregion
+
+
+// Main update function and progressing through question -> answer -> board
+// #region GAME PROGRESSION
+function mainLoad(){
+    console.log('loading')
+    // check which data to load
+    if (gameState == 0){ // single Jeopardy
+        stateData.categories = gameData.categories.slice(0,6);
+        stateData.clues = gameData.clues.slice(0,30);
+    }
+    else if (gameState == 1){ // double Jeopardy
+        stateData.categories = gameData.categories.slice(6,13);
+        stateData.clues = gameData.clues.slice(30,61);
+        // Display splash screen
+        document.getElementsByClassName('splash')[0].style.zIndex =10;
+        document.getElementsByClassName('splash')[0].style.display = 'grid';
+        document.getElementById('splash-message').textContent = 'DOUBLE';
+        let splashButton = document.getElementById('load-id');
+        splashButton.textContent = 'GO';
+    }
+    else{ // final Jeopardy
+        clueState = 4;
+        gameState++;
+        stateData.categories = gameData.categories.slice(-1);
+        stateData.clues = gameData.clues.slice(-1);
+        // Display splash screen
+        document.getElementsByClassName('splash')[0].style.zIndex =10;
+        document.getElementsByClassName('splash')[0].style.display = 'grid';
+        document.getElementById('splash-message').textContent = 'FINAL';
+        let splashButton = document.getElementById('load-id');
+        splashButton.textContent = 'LETS GO!';
+        // Display the category
+        document.getElementsByClassName('clue-screen')[0].style.display ='grid';
+        document.getElementsByClassName('clue-clue')[0].textContent = stateData.categories[0].name;
+        let nextButton = document.getElementById('next');
+        nextButton.textContent = 'QUESTION';
+        nextButton.onclick = (e) => {
+            displayQuestion(0);
+        };
+
+    };
+    addClickEventsToGridItems();
+    setCategories(stateData);
+}
+
 function displayQuestion(index) {
-    document.getElementsByClassName('question')[index].classList.add('activated');
+    document.getElementsByClassName('question')[index].classList.add('activated'); // hide selected question from board
     document.getElementsByClassName('question')[index].textContent ='';
     document.getElementsByClassName('clue-screen')[0].style.display ='grid';
-    jsonIndex = (index % 5) * 6 + Math.floor(index/5);
+    jsonIndex = (index % 5) * 6 + Math.floor(index/5);  // update jsonIndex to be from selected question
     document.getElementsByClassName('clue-clue')[0].textContent = stateData.clues[jsonIndex].clue;
     clueState = 2; // 2 -- viewing question clue
-    let nextButton = document.getElementById('next');
-    nextButton.textContent = 'ANSWER';
-    nextButton.onclick = (e) => {
-        displayAnswer(jsonIndex);
-    };
-};
+    buzzerHandler(); // START BUZZ TIME
+    // CHANGE BUTTON
+    nextButton.style.color = 'white';
+    nextButton.style.border = 'solid .3vmax white';
+    nextButton.textContent = 'ANSWER'
+}
 
 function displayAnswer(jsonIndex){
     document.getElementsByClassName('clue-clue')[0].innerHTML = stateData.clues[jsonIndex].answer;
     clueState = 3; // 3 -- viewing question answer
-    document.getElementById('next').innerHTML = 'BACK';
-    document.getElementById('next').onclick = (e) =>{
+
+    // RESET BUTTON AND BUZZER
+    nextButton.style.color = 'white';
+    nextButton.style.border = 'solid .3vmax white';
+    nextButton.textContent = 'BACK'
+    resetBuzzer();
+}
+
+function nextButtonHandler(){ // handles button on clue screen and answer screen
+    
+    // IF ON CLUE SCREEN
+    if (clueState === 2){
+        nextButton.textContent = 'ANSWER'
+        if (buzzAllow === 1){ // DONT DISPLAY ANSWER UNTIL BUZZING IS ALLOWED
+            displayAnswer(jsonIndex)
+        }
+    }
+    // IF ON ANSWER SCREEN
+    else if (clueState === 3){
         backButtonHander();
     };
 }
 
 function backButtonHander(){
+    //
+
     document.getElementsByClassName('clue-screen')[0].style.display ='none';
     // Check if all questions have been activated
     if(document.getElementsByClassName('activated').length == 30){
@@ -243,7 +284,6 @@ function backButtonHander(){
             mainLoad();
             return
         }
-        
     }
     else{
         clueState = 1; // returning to question board, so resetting clueState
@@ -260,6 +300,34 @@ function backButtonHander(){
         };
     };
 }
+
+function spacebarHandler(){
+    if (clueState === 4){ // 4 --- final Jeopardy
+        if(document.getElementsByClassName('splash')[0].style.display === 'grid'){ // if on splash screen
+            loadButtonHandler();
+        }
+        else{
+            clueState = 2;
+            displayQuestion(0);
+        };    
+    }
+    else if (document.getElementsByClassName('splash')[0].style.display === 'grid'){ // remove functionality of spacebar when splash screen is displayed and not final jeopardy
+        if(document.getElementById('load-id').innerHTML === 'GO'){
+            loadButtonHandler();    // unless splash screen is double jeopardy, then proceed
+            return;
+        }
+        else{
+            return
+        };
+    }
+    else if (clueState === 1){ // 1 --- viewing question board
+        displayQuestion(position.x);
+    }
+    else{
+        nextButtonHandler();
+    };
+};
+
 
 // Double Jeopardy
 function engageDouble(){
@@ -281,17 +349,12 @@ function engageDouble(){
     // Progress gameState, prepare clueState, and reload
     gameState = 1;
     mainLoad(gameState);
-};
+}
 
-// Load JSON function
-async function getJSON(url) {
-    let response = await fetch(url);
-    let data = await response.json();
-    return data;
-};
+// #endregion 
 
 
-// Keyboard Navigation
+// #region KEYBOARD NAVIGATION
 
 var position = { x: 0, y:0};
 var questionMap = [];
@@ -307,6 +370,8 @@ $(document).ready(function () {
 });
 
 $(window).on('keydown', function (e) {
+
+    // GRID NAVIGATION
     if (e.keyCode === 37) {// left
         moveLeft();}
     else if (e.keyCode === 38){ // up
@@ -318,7 +383,17 @@ $(window).on('keydown', function (e) {
     else if (e.keyCode === 32){ // spacebar handler
         spacebarHandler();}
     else if (e.keyCode === 70){ // F key
-        fullScreenToggle();}; 
+        fullScreenToggle();}
+
+    // BUZZING
+    else if (e.keyCode === 65){ // a key
+        mainBuzz(e.keyCode);}
+    else if (e.keyCode === 66){ // b key
+        mainBuzz(e.keyCode);}
+    else if (e.keyCode === 88){ // x key
+        mainBuzz(e.keyCode);}
+    else if (e.keyCode === 89){ // y key
+        mainBuzz(e.keyCode);};
     highlightCell();
 });
 
@@ -351,35 +426,179 @@ function highlightCell() {
     questionMap[position.y][position.x].addClass('selected');
 };
 
-function spacebarHandler(){
-    if (clueState === 4){ // 4 --- final Jeopardy
-        if(document.getElementsByClassName('splash')[0].style.display === 'grid'){ // if on splash screen
-            loadButtonHandler();
+// #endregion
+
+// #region BUZZING FUNCTIONS
+
+/**
+ * Self-adjusting interval to account for drifting
+ * 
+ * @param {function} workFunc  Callback containing the work to be done
+ *                             for each interval
+ * @param {int}      interval  Interval speed (in milliseconds)
+ * @param {int}      duration  Time that ticker should run
+ * @param {function} errorFunc (Optional) Callback to run if the drift
+ *                             exceeds interval
+ */
+function AdjustingInterval(workFunc, interval, duration, errorFunc) {
+
+    var that = this;
+    var expected, timeout;
+    this.interval = interval;
+
+    this.start = function() {
+        expected = Date.now() + this.interval;
+        timeout = setTimeout(step, this.interval);
+    }
+
+    this.stop = function() {
+        clearTimeout(timeout);
+        countingNumber = 0;
+    }
+
+    function step() {
+        var drift = Date.now() - expected;
+        if (drift > that.interval) {
+            // You could have some default stuff here too...
+            if (errorFunc) errorFunc();
         }
-        else{
-            clueState = 2;
-            displayQuestion(0);
-        };    
-    }
-    else if (document.getElementsByClassName('splash')[0].style.display === 'grid'){ // remove functionality of spacebar when splash screen is displayed and not final jeopardy
-        if(document.getElementById('load-id').innerHTML === 'GO'){
-            loadButtonHandler();    // unless splash screen is double jeopardy, then proceed
-            return;
+        workFunc();
+        expected += that.interval;
+        timeout = setTimeout(step, Math.max(0, that.interval-drift));
+        if ((countingNumber/interval*10) >= duration){
+            allowBuzz();
+            that.stop();
         }
-        else{
-            return
-        };
     }
-    else if (clueState === 1){ // 1 --- viewing question board
-        displayQuestion(position.x);
-    }
-    else if (clueState === 2){ // 2 --- viewing question clue
-        displayAnswer(jsonIndex);
-    }
-    else if (clueState === 3){ // 3 --- viewing question answer
-        backButtonHander();
-    };
+}
+
+// Initialize starting number and buzz allow
+var countingNumber = 0;
+var buzzAllow = 0; // 0 when buzzing isn't allowed, 1 when it is
+
+// Define the work to be done
+var doWork = function() {
+    ++countingNumber;
 };
+
+// Define what to do if something goes wrong
+var doError = function() {
+    console.warn('The drift exceeded the interval.');
+};
+
+function buzzerHandler(){
+    // BUZZER TIMING
+
+    // get duration based on amount of words in clue
+
+    let charNumber = ((stateData.clues[jsonIndex].clue).toString()).length;
+    let buzzerDuration = (60 * charNumber) / 775; 
+    document.getElementById('time-bar').style.setProperty("--duration", buzzerDuration);
+
+    // (The third argument is optional)
+    var ticker = new AdjustingInterval(doWork, 100, buzzerDuration, doError);
+    ticker.start();
+};
+
+// Allow buzzing Function
+function allowBuzz(){
+    nextButton.style.color = '#FBA537';
+    nextButton.style.border = 'solid .3vmax #FBA537';
+    buzzAllow = 1;
+}
+
+// Main Buzz Function
+
+
+function mainBuzz(player){
+    let playerIndex = playerArray.indexOf(player);
+    if (buzzAllow == 0){ // assign penalty
+        console.log('ITS NOT TIME YET');
+        if (buzzArray[playerIndex] == undefined){
+            buzzArray[playerIndex] = 1.5;
+        }
+    };
+    if (buzzAllow == 1){ // allow buzzing in
+        if (buzzArray[playerIndex] == 1.5){
+            if (buzzOrder == 0){
+                buzzArray[playerIndex] += .1;
+            };
+            buzzArray[playerIndex] += buzzOrder;
+            ++buzzOrder;
+            sortBuzz(player);
+        }
+        if (buzzArray[playerIndex] == undefined){
+            buzzArray[playerIndex] = 0 + buzzOrder;
+            ++buzzOrder;
+            sortBuzz(player);
+        }
+    };
+}
+
+function sortBuzz(player){
+    // make player visible when buzzing in
+    let activePlayer = document.getElementById('player-'+player);
+    activePlayer.style.display = 'grid';
+
+    // find players who have buzzed in
+
+    // BUZZ ARRAY CONDITIONS
+    // undefined - not buzzed, no penalty
+    // 1.5 - not buzzed, no penalty
+    // integer - buzzed, no penalty
+    // real number not 1.5 - buzzed, penalty
+    // 1.6 - buzzed in first with penalty
+    // Only need to sort the last three cases
+
+    let activePlayersArray = [];
+    for (i=0; i<buzzArray.length; i++){
+        let toPush = 0;
+        if (buzzArray[i] > 1.5 || Number.isInteger(buzzArray[i]) == true){
+            toPush = buzzArray[i];
+        }
+        else{
+            toPush = undefined;
+        };
+        activePlayersArray.push(toPush);
+    };
+
+    let sortedArray = activePlayersArray.toSorted();
+
+    let rankArray = [];
+    sortedArray.forEach((element,index) => rankArray[activePlayersArray.indexOf(element)] = 1 + index);
+
+    let playerElements = document.getElementById('buzz-container').children;
+    for (i = 0; i < playerElements.length; i++){
+        if (rankArray[i] == undefined){
+            playerElements[i].style.gridRow = 4;
+            continue
+        };
+        playerElements[i].style.gridRow = rankArray[i];
+    };
+
+}
+
+function resetBuzzer(){
+    playerArray = [65,66,88,89];
+    buzzArray = [,,,,];
+    buzzOrder = 0;
+    buzzAllow = 0;
+    let playerElements = document.getElementById('buzz-container').children;
+    for (i = 0; i < playerElements.length; i++){
+        playerElements[i].style.display = 'none';
+        playerElements[i].style.gridRow = 4;
+    };
+}
+
+// #endregion
+
+// #region MISC FUNCTIONS
+
+document.querySelectorAll("button").forEach( function(item) {
+    item.addEventListener('focus', function() {
+        this.blur();
+    })
+});
 
 function fullScreenToggle(){
     var elem = document.documentElement;
@@ -398,7 +617,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
   }
   
-  function sleep(milliseconds) {
+function sleep(milliseconds) {
     var start = new Date().getTime();
     for (var i = 0; i < 1e7; i++) {
       if ((new Date().getTime() - start) > milliseconds){
@@ -406,3 +625,5 @@ function getRandomInt(min, max) {
       }
     }
   }
+
+  // #endregion

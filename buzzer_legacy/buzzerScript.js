@@ -7,11 +7,18 @@ mainLoad()  -- based on gameState
 
 */
 
+// #region GLOBAL VARIABLES
+
 var gameData = {};
 var stateData = {};
 var isRandom = 1; // 0 for normal load, 1 for random game load
 var gameState = 0; // 0 -- single jeopardy, 1 -- double jeopardy, 2 -- final jeopardy
 var clueState = 0;
+var nextButton = document.getElementById('next');
+var jsonIndex = 0;
+nextButton.addEventListener("click", nextButtonHandler);
+
+// #endregion
 
 loadRandomHandler();
 
@@ -78,9 +85,9 @@ function mainLoad(){
         // Display the category
         document.getElementsByClassName('clue-screen')[0].style.display ='grid';
         document.getElementsByClassName('clue-clue')[0].textContent = stateData.categories[0].name;
-        let nextButton = document.getElementById('next');
-        nextButton.textContent = 'QUESTION';
-        nextButton.onclick = (e) => {
+        let finalNext = document.getElementById('next');
+        finalNext.textContent = 'QUESTION';
+        finalNext.onclick = (e) => {
             displayQuestion(0);
         };
 
@@ -214,30 +221,28 @@ function displayQuestion(index) {
     jsonIndex = (index % 5) * 6 + Math.floor(index/5);
     document.getElementsByClassName('clue-clue')[0].textContent = stateData.clues[jsonIndex].clue;
     clueState = 2; // 2 -- viewing question clue
+    buzzerHandler(); // START BUZZ TIME
 
-    buzzerHandler();
-
-    let nextButton = document.getElementById('next');
-    nextButton.textContent = 'ANSWER';
-    nextButton.onclick = (e) => {
-        displayAnswer(jsonIndex);
-    };
+    // CHANGE BUTTON
+    nextButton.style.color = 'white';
+    nextButton.style.border = 'solid .3vmax white';
+    nextButton.textContent = 'ANSWER'
 };
 
 function displayAnswer(jsonIndex){
     document.getElementsByClassName('clue-clue')[0].innerHTML = stateData.clues[jsonIndex].answer;
     clueState = 3; // 3 -- viewing question answer
-    document.getElementById('next').innerHTML = 'BACK';
-    document.getElementById('next').style.color = 'white';
-    document.getElementById('next').style.border = 'solid .3vmax white';
-    document.getElementById('next').onclick = (e) =>{
-        backButtonHander();
-    };
+
+    // RESET BUTTON AND BUZZER
+    nextButton.style.color = 'white';
+    nextButton.style.border = 'solid .3vmax white';
+    nextButton.textContent = 'BACK'
     resetBuzzer();
 }
 
 function backButtonHander(){
     document.getElementsByClassName('clue-screen')[0].style.display ='none';
+
     // Check if all questions have been activated
     if(document.getElementsByClassName('activated').length == 30){
         if(gameState == 0){
@@ -265,6 +270,24 @@ function backButtonHander(){
         };
     };
 }
+
+nextButton.addEventListener("click", nextButtonHandler);
+
+function nextButtonHandler(){ // handles button on clue screen and answer screen
+    
+    // IF ON CLUE SCREEN
+    if (clueState === 2){
+        nextButton.textContent = 'ANSWER'
+        if (buzzAllow === 1){ // DONT DISPLAY ANSWER UNTIL BUZZING IS ALLOWED
+            displayAnswer(jsonIndex)
+        }
+    }
+    // IF ON ANSWER SCREEN
+    else if (clueState === 3){
+        backButtonHander();
+    };
+}
+
 
 // Double Jeopardy
 function engageDouble(){
@@ -389,7 +412,7 @@ function spacebarHandler(){
     else if (clueState === 1){ // 1 --- viewing question board
         displayQuestion(position.x);
     }
-    else if (clueState === 2){ // 2 --- viewing question clue
+    else if (clueState === 2 && buzzAllow === 1){ // 2 --- viewing question clue and buzzing is done
         displayAnswer(jsonIndex);
     }
     else if (clueState === 3){ // 3 --- viewing question answer
@@ -426,7 +449,6 @@ function getRandomInt(min, max) {
  */
 function AdjustingInterval(workFunc, interval, duration, errorFunc) {
 
-    console.log(duration);
     var that = this;
     var expected, timeout;
     this.interval = interval;
@@ -477,7 +499,8 @@ function buzzerHandler(){
     // get duration based on amount of words in clue
 
     let charNumber = ((stateData.clues[jsonIndex].clue).toString()).length;
-    let buzzerDuration = (60 * charNumber) / 775;
+    // let buzzerDuration = (60 * charNumber) / 775; // reduced for testing
+    let buzzerDuration = 3;
     document.getElementById('time-bar').style.setProperty("--duration", buzzerDuration);
 
     // (The third argument is optional)
@@ -487,10 +510,11 @@ function buzzerHandler(){
 
 // Allow buzzing Function
 function allowBuzz(){
-    nextBtn = document.getElementById('next');
+    let nextBtn = document.getElementById('next');
     nextBtn.style.color = '#FBA537';
     nextBtn.style.border = 'solid .3vmax #FBA537';
     buzzAllow = 1;
+
 }
 
 // Main Buzz Function
@@ -504,11 +528,14 @@ function mainBuzz(player){
     if (buzzAllow == 0){ // assign penalty
         console.log('ITS NOT TIME YET');
         if (buzzArray[playerIndex] == undefined){
-            buzzArray[playerIndex] = 1.1;
+            buzzArray[playerIndex] = 1.5;
         }
     };
     if (buzzAllow == 1){ // allow buzzing in
-        if (buzzArray[playerIndex] == 1.1){
+        if (buzzArray[playerIndex] == 1.5){
+            if (buzzOrder == 0){
+                buzzArray[playerIndex] += .1;
+            };
             buzzArray[playerIndex] += buzzOrder;
             ++buzzOrder;
             sortBuzz(player);
@@ -526,17 +553,33 @@ function sortBuzz(player){
     let activePlayer = document.getElementById('player-'+player);
     activePlayer.style.display = 'grid';
 
-    let tempArray = [];
+    // find players who have buzzed in
+
+    // BUZZ ARRAY CONDITIONS
+    // undefined - not buzzed, no penalty
+    // 1.5 - not buzzed, no penalty
+    // integer - buzzed, no penalty
+    // real number not 1.5 - buzzed, penalty
+    // 1.6 - buzzed in first with penalty
+
+    // Only need to sort the last three cases
+
+    let activePlayersArray = [];
     for (i=0; i<buzzArray.length; i++){
-        let toPush = buzzArray[i]
-        if (buzzArray[i] == 1.1){
-            toPush = 10;
+        let toPush = 0;
+        if (buzzArray[i] > 1.5 || Number.isInteger(buzzArray[i]) == true){
+            toPush = buzzArray[i];
+        }
+        else{
+            toPush = undefined;
         };
-        tempArray.push(toPush);
+        activePlayersArray.push(toPush);
     };
-    let sortedArray = (tempArray).toSorted();
+
+    let sortedArray = activePlayersArray.toSorted();
+
     let rankArray = [];
-    tempArray.forEach((element,index) => rankArray[index] = 1 + sortedArray.indexOf(element));
+    sortedArray.forEach((element,index) => rankArray[activePlayersArray.indexOf(element)] = 1 + index);
 
     let playerElements = document.getElementById('buzz-container').children;
     for (i = 0; i < playerElements.length; i++){
@@ -546,6 +589,7 @@ function sortBuzz(player){
         };
         playerElements[i].style.gridRow = rankArray[i];
     };
+
 }
 
 function resetBuzzer(){
@@ -558,8 +602,8 @@ function resetBuzzer(){
         playerElements[i].style.display = 'none';
         playerElements[i].style.gridRow = 4;
     };
+}
 
-    nextBtn = document.getElementById('next');
-    nextBtn.style.color = 'white';
-    nextBtn.style.border = 'solid .3vmax white';
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
