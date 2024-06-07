@@ -215,17 +215,7 @@ function displayQuestion(index) {
     document.getElementsByClassName('clue-clue')[0].textContent = stateData.clues[jsonIndex].clue;
     clueState = 2; // 2 -- viewing question clue
 
-    // BUZZER TIMING
-
-    // get duration based on amount of words in clue
-
-    let charNumber = ((stateData.clues[jsonIndex].clue).toString()).length;
-    let buzzerDuration = (60 * charNumber) / 775;
-    document.getElementById('time-bar').style.setProperty("--duration", buzzerDuration);
-
-    // (The third argument is optional)
-    var ticker = new AdjustingInterval(doWork, 100, buzzerDuration, doError);
-    ticker.start();
+    buzzerHandler();
 
     let nextButton = document.getElementById('next');
     nextButton.textContent = 'ANSWER';
@@ -238,9 +228,12 @@ function displayAnswer(jsonIndex){
     document.getElementsByClassName('clue-clue')[0].innerHTML = stateData.clues[jsonIndex].answer;
     clueState = 3; // 3 -- viewing question answer
     document.getElementById('next').innerHTML = 'BACK';
+    document.getElementById('next').style.color = 'white';
+    document.getElementById('next').style.border = 'solid .3vmax white';
     document.getElementById('next').onclick = (e) =>{
         backButtonHander();
     };
+    resetBuzzer();
 }
 
 function backButtonHander(){
@@ -334,14 +327,16 @@ $(window).on('keydown', function (e) {
     else if (e.keyCode === 70){ // F key
         fullScreenToggle();}
     // BUZZING
-    else if (e.keyCode === 88){ // X key
-        buzzIn(88);};
+    else if (e.keyCode === 65){ // a key
+        mainBuzz(e.keyCode);}
+    else if (e.keyCode === 66){ // b key
+        mainBuzz(e.keyCode);}
+    else if (e.keyCode === 88){ // x key
+        mainBuzz(e.keyCode);}
+    else if (e.keyCode === 89){ // y key
+        mainBuzz(e.keyCode);};
     highlightCell();
 });
-
-function buzzIn(player) {
-    console.log(player + ' buzzed in');
-}
 
 function moveLeft() {
     position.x-=5;
@@ -443,7 +438,7 @@ function AdjustingInterval(workFunc, interval, duration, errorFunc) {
 
     this.stop = function() {
         clearTimeout(timeout);
-        justSomeNumber = 0;
+        countingNumber = 0;
     }
 
     function step() {
@@ -455,20 +450,20 @@ function AdjustingInterval(workFunc, interval, duration, errorFunc) {
         workFunc();
         expected += that.interval;
         timeout = setTimeout(step, Math.max(0, that.interval-drift));
-        if ((justSomeNumber/interval*10) >= duration){
-            console.log('time up!')
+        if ((countingNumber/interval*10) >= duration){
+            allowBuzz();
             that.stop();
         }
     }
 }
 
-// For testing purposes, we'll just increment
-// this and send it out to the console.
-var justSomeNumber = 0;
+// Initialize starting number and buzz allow
+var countingNumber = 0;
+var buzzAllow = 0; // 0 when buzzing isn't allowed, 1 when it is
 
 // Define the work to be done
 var doWork = function() {
-    ++justSomeNumber;
+    ++countingNumber;
 };
 
 // Define what to do if something goes wrong
@@ -476,4 +471,95 @@ var doError = function() {
     console.warn('The drift exceeded the interval.');
 };
 
+function buzzerHandler(){
+    // BUZZER TIMING
 
+    // get duration based on amount of words in clue
+
+    let charNumber = ((stateData.clues[jsonIndex].clue).toString()).length;
+    let buzzerDuration = (60 * charNumber) / 775;
+    document.getElementById('time-bar').style.setProperty("--duration", buzzerDuration);
+
+    // (The third argument is optional)
+    var ticker = new AdjustingInterval(doWork, 100, buzzerDuration, doError);
+    ticker.start();
+};
+
+// Allow buzzing Function
+function allowBuzz(){
+    nextBtn = document.getElementById('next');
+    nextBtn.style.color = '#FBA537';
+    nextBtn.style.border = 'solid .3vmax #FBA537';
+    buzzAllow = 1;
+}
+
+// Main Buzz Function
+
+var playerArray = [65,66,88,89];
+var buzzArray = [,,,,];
+var buzzOrder = 0;
+
+function mainBuzz(player){
+    let playerIndex = playerArray.indexOf(player);
+    if (buzzAllow == 0){ // assign penalty
+        console.log('ITS NOT TIME YET');
+        if (buzzArray[playerIndex] == undefined){
+            buzzArray[playerIndex] = 1.1;
+        }
+    };
+    if (buzzAllow == 1){ // allow buzzing in
+        if (buzzArray[playerIndex] == 1.1){
+            buzzArray[playerIndex] += buzzOrder;
+            ++buzzOrder;
+            sortBuzz(player);
+        }
+        if (buzzArray[playerIndex] == undefined){
+            buzzArray[playerIndex] = 0 + buzzOrder;
+            ++buzzOrder;
+            sortBuzz(player);
+        }
+    };
+}
+
+function sortBuzz(player){
+    // make player visible when buzzing in
+    let activePlayer = document.getElementById('player-'+player);
+    activePlayer.style.display = 'grid';
+
+    let tempArray = [];
+    for (i=0; i<buzzArray.length; i++){
+        let toPush = buzzArray[i]
+        if (buzzArray[i] == 1.1){
+            toPush = 10;
+        };
+        tempArray.push(toPush);
+    };
+    let sortedArray = (tempArray).toSorted();
+    let rankArray = [];
+    tempArray.forEach((element,index) => rankArray[index] = 1 + sortedArray.indexOf(element));
+
+    let playerElements = document.getElementById('buzz-container').children;
+    for (i = 0; i < playerElements.length; i++){
+        if (rankArray[i] == undefined){
+            playerElements[i].style.gridRow = 4;
+            continue
+        };
+        playerElements[i].style.gridRow = rankArray[i];
+    };
+}
+
+function resetBuzzer(){
+    playerArray = [65,66,88,89];
+    buzzArray = [,,,,];
+    buzzOrder = 0;
+    buzzAllow = 0;
+    let playerElements = document.getElementById('buzz-container').children;
+    for (i = 0; i < playerElements.length; i++){
+        playerElements[i].style.display = 'none';
+        playerElements[i].style.gridRow = 4;
+    };
+
+    nextBtn = document.getElementById('next');
+    nextBtn.style.color = 'white';
+    nextBtn.style.border = 'solid .3vmax white';
+}

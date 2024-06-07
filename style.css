@@ -103,7 +103,7 @@ h1{
     text-shadow: .4vmax .25vmax .1vmax black;
     font-family: Georgia, serif;
     text-transform: uppercase;
-    overflow: scroll;
+    overflow: visible;
     align-items: center;
     justify-self: center;
     text-align: center;
@@ -126,6 +126,36 @@ h1{
     border: solid .3vmax white;
 }
 
+.player-buzz-container{
+    position: fixed;
+    top: 5vh;
+    width:7vw;
+    row-gap: 2vh;
+    display: grid;
+    grid-template-rows: repeat(4, 7vh);
+    
+}
+
+.player-buzz-container > *{
+    width: 8vw;
+    height: 5vh;
+    text-align: center;
+    align-items: center;
+    justify-self: center;
+    font-family: Georgia, serif;
+    font-size: 3vmin;
+    color: white;
+    text-shadow: 5px 3px 1.5px black;
+    cursor:pointer;
+    background-color: transparent;
+    border: solid .3vmax white;
+}
+
+.player-icon{
+    display: none;
+    grid-row:4;
+}
+
 .next-button:hover{
     color: #FBA537;
     border: solid .3vmax #FBA537;
@@ -136,11 +166,11 @@ h1{
 .round-time-bar div {
     position: fixed;
     right:-100%; left:-100%;
-    bottom: 15vh;
+    bottom: 13vh;
     margin:auto;
     z-index:0;
     width: 60vw;
-    height: 5vh;
+    height: 3vh;
     background: white;
 }
 
@@ -153,7 +183,7 @@ h1{
 @keyframes roundtime {
     to {
       /* More performant than animating `width` */
-      transform: scaleX(0);
+      transform: scaleX(.0001);
     }
 }
 
