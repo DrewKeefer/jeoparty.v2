@@ -500,7 +500,7 @@ function buzzerHandler(){
 
     let charNumber = ((stateData.clues[jsonIndex].clue).toString()).length;
     // let buzzerDuration = (60 * charNumber) / 775; // reduced for testing
-    let buzzerDuration = 3;
+    let buzzerDuration = .5;
     document.getElementById('time-bar').style.setProperty("--duration", buzzerDuration);
 
     // (The third argument is optional)
@@ -551,7 +551,8 @@ function mainBuzz(player){
 function sortBuzz(player){
     // make player visible when buzzing in
     let activePlayer = document.getElementById('player-'+player);
-    activePlayer.style.display = 'grid';
+    activePlayer.style.visibility = 'visible';
+    activePlayer.classList.remove('buzz-animate');
 
     // find players who have buzzed in
 
@@ -599,7 +600,7 @@ function resetBuzzer(){
     buzzAllow = 0;
     let playerElements = document.getElementById('buzz-container').children;
     for (i = 0; i < playerElements.length; i++){
-        playerElements[i].style.display = 'none';
+        playerElements[i].style.visibility = 'hidden';
         playerElements[i].style.gridRow = 4;
     };
 }
