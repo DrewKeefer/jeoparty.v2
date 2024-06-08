@@ -521,7 +521,7 @@ function buzzerHandler(){
 
     let charNumber = ((stateData.clues[jsonIndex].clue).toString()).length;
     let buzzerDuration = (60 * charNumber) / 775;
-    buzzerDuration = 1; // testing
+    // buzzerDuration = 1; // testing
     document.getElementById('time-bar').style.setProperty("--duration", buzzerDuration);
 
     // (The third argument is optional)
@@ -552,11 +552,11 @@ function mainBuzz(player){
 
             // meme audio
             if (getRandomInt(0,20) < 1){
-                let audio = new Audio("/audio/notyet"+getRandomInt(1,4)+".mp3");
+                let audio = new Audio("./audio/notyet"+getRandomInt(1,4)+".mp3");
                 audio.play();
             }
             else{
-                let audio = new Audio("/audio/early.mp3")
+                let audio = new Audio("./audio/early.mp3")
                 audio.play();
             }
 
@@ -569,7 +569,7 @@ function mainBuzz(player){
     };
     if (buzzAllow == 1){ // no penalty
         if (buzzArray[playerIndex] == undefined){
-            let audio = new Audio("/audio/buzz.mp3");
+            let audio = new Audio("./audio/buzz.mp3");
             audio.play();
             buzzArray[playerIndex] = 0 + buzzOrder;
             ++buzzOrder;
