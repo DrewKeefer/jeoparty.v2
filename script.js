@@ -23,6 +23,10 @@ var buzzArray = [,,,,];
 var buzzOrder = 0;
 var buzzPenalty = 2.5;
 
+var buzzAudio = new Audio("https://github.com/DrewKeefer/jeoparty.v2/blob/main/audio/buzz.mp3?raw=true");
+var earlyAudio = new Audio("https://github.com/DrewKeefer/jeoparty.v2/blob/main/audio/early.mp3?raw=true");
+var memeAudio = new Audio("https://github.com/DrewKeefer/jeoparty.v2/blob/main/audio/notyet3.mp3?raw=true");
+
 
 // #endregion
 
@@ -552,12 +556,10 @@ function mainBuzz(player){
 
             // meme audio
             if (getRandomInt(0,20) < 1){
-                let audio = new Audio("./audio/notyet"+getRandomInt(1,4)+".mp3");
-                audio.play();
+                memeAudio.play();
             }
             else{
-                let audio = new Audio("./audio/early.mp3")
-                audio.play();
+                earlyAudio.play();
             }
 
             let activePlayer = document.getElementById('player-'+player);
@@ -569,8 +571,7 @@ function mainBuzz(player){
     };
     if (buzzAllow == 1){ // no penalty
         if (buzzArray[playerIndex] == undefined){
-            let audio = new Audio("./audio/buzz.mp3");
-            audio.play();
+            buzzAudio.play();
             buzzArray[playerIndex] = 0 + buzzOrder;
             ++buzzOrder;
             sortBuzz(player);
