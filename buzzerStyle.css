@@ -127,6 +127,7 @@ h1{
 }
 
 .player-buzz-container{
+    margin-left: 1vw;
     position: fixed;
     top: 5vh;
     width:7vw;
@@ -137,25 +138,24 @@ h1{
 }
 
 .player-buzz-container > *{
-    margin-left: 1vw;
-    width: 8vw;
-    height: 5vh;
+    display: grid;
     text-align: center;
     align-items: center;
-    justify-self: center;
+    width: 8vw;
+    height: 5vh;
     font-family: Georgia, serif;
     font-size: 3vmin;
     color: white;
     text-shadow: 5px 3px 1.5px black;
-    cursor:pointer;
     background-color: transparent;
     border: solid .3vmax white;
 }
 
 .player-icon{
     visibility: hidden;
-    -webkit-transition-duration: 200ms;
-    transition-duration: 200ms;
+    transition-property: transform;
+    -webkit-transition-duration: 150ms;
+    transition-duration: 150ms;
     grid-row:4;
 }
 

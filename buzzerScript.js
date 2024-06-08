@@ -601,6 +601,7 @@ function resetBuzzer(){
     let playerElements = document.getElementById('buzz-container').children;
     for (i = 0; i < playerElements.length; i++){
         playerElements[i].style.visibility = 'hidden';
+        playerElements[i].classList.add('buzz-animate');
         playerElements[i].style.gridRow = 4;
     };
 }

@@ -8,15 +8,6 @@ body{
     background-color: black;
 }
 
-h1{
-    color: white;
-    font-size: 2.5vmax;
-    text-shadow: 2.5px 2.5px 2.5px black;
-    display: grid;
-    align-self: end;
-    justify-self: center;
-}
-
 /* Game Selector Container */
 
 .select-container{
@@ -127,6 +118,7 @@ h1{
 }
 
 .player-buzz-container{
+    margin-left: 1vw;
     position: fixed;
     top: 5vh;
     width:7vw;
@@ -137,24 +129,31 @@ h1{
 }
 
 .player-buzz-container > *{
-    margin-left: 1vw;
-    width: 8vw;
-    height: 5vh;
+    display: grid;
     text-align: center;
     align-items: center;
-    justify-self: center;
+    width: 8vw;
+    height: 5vh;
     font-family: Georgia, serif;
     font-size: 3vmin;
     color: white;
     text-shadow: 5px 3px 1.5px black;
-    cursor:pointer;
     background-color: transparent;
     border: solid .3vmax white;
 }
 
 .player-icon{
-    display: none;
+    text-transform: uppercase;
+    visibility: hidden;
+    transition-property: transform;
+    -webkit-transition-duration: 150ms;
+    transition-duration: 150ms;
     grid-row:4;
+}
+
+.buzz-animate{
+    transform: translate(-100%);
+    -webkit-transform: translate(-100%);  
 }
 
 .next-button:hover{
@@ -199,16 +198,28 @@ h1{
     margin: 0;
     background-color: #071277;
     z-index: 2;
+    row-gap: 1vh;
     display: grid;
-    grid-template-columns: auto;
-    grid-template-rows: 1fr 3fr .1fr .1fr 2fr;
-    grid-gap: 2vmax;
+    grid-template-columns: 1;
+    grid-template-rows: .5fr 3fr .75fr .75fr .5fr 3fr;
     grid-template-areas: 
         "header"
         "image"
         "load"
         "random"
-        "random-text";
+        "random-text"
+        "names-container";
+}
+
+h1{
+    display: grid;
+    grid-area: header;
+    color: white;
+    font-size: 2vmax;
+    text-shadow: 2.5px 2.5px 2.5px black;
+    display: grid;
+    align-self: end;
+    justify-self: center;
 }
 
 .titlecard{
@@ -218,35 +229,79 @@ h1{
     align-self: start;
 }
 
+
 .load-game{
-    width: 25vmax;
-    height: 5vmax;
+    grid-area: load;
+    width: 15vmax;
+    height: 6vh;
     align-self: start;
     justify-self: center;
     font-family: Impact, sans-serif;
-    font-size: 2.5vw;
+    font-size: 2vw;
     color: #FBA537;
     text-shadow: 5px 3px 1.5px black;
     cursor:pointer;
     background-color: transparent;
-    border: solid .5vmax #FBA537;
+    border: solid .3vmax #FBA537;
 }
 
 
 .load-game:hover{
     color: white;
-    border: solid 5px white;
+    border: solid .3vmax white;
+}
+
+.random-button{
+    grid-area: random;
 }
 
 .random-info{
+    grid-area: random-text;
     color: white;
-    font-size: 2vmax;
+    height: 3.5vh;
+    font-size: 1vmax;
     text-shadow: 2.5px 2.5px 2.5px black;
     display: grid;
-    align-self: start;
-    justify-self: center;
     text-align: center;
 }
+
+.custom-names-container{
+    align-self: start;
+    justify-self: center;
+    width: 30vmax;
+    display: grid;
+    column-gap: 50px;
+
+    grid-area: names-container;
+    grid-template-columns: repeat(2,1fr);
+    grid-template-rows: repeat(4,5vh);
+}
+
+.custom-input{
+    flex-grow: 1;
+    max-width: 100%;
+    grid-column: 2;
+    border: 0;
+    background-color: transparent;
+    place-self: center start;
+
+    color: white;
+    font-size: 1vmax;
+    text-shadow: 2px 2px 2px black;
+    text-transform: uppercase;
+    border-bottom: 2px solid white;
+}
+
+.custom-name{
+    grid-column: 1;
+    place-self: center stretch;
+    text-align: end;
+
+    color: white;
+    font-size: 1vmax;
+    text-shadow: 2px 2px 2px black;
+}
+
 
 /* Grid */
 
@@ -326,8 +381,7 @@ h1{
     text-shadow: 5px 3px 1.5px black;
     grid-area: 1 / 1 / end / end;
     text-align: center;
-    align-self: center;
-    justify-self: stretch;
+    place-items: center stretch;
     z-index: 4;
     background-color: #071277;
     padding: 5px;

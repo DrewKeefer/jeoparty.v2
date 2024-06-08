@@ -17,8 +17,14 @@
     <h1 id="splash-message">WELCOME TO</h1>
     <img class="titlecard" src="titlecard.png">
     <button id="load-id" class="load-game" onclick="loadButtonHandler()">LOAD GAME</button>
-    <button id="random-id" class="load-game" onclick="loadRandomHandler()">RANDOM GAME</button>
+    <button id="random-id" class="load-game random-button" onclick="loadRandomHandler()">RANDOM GAME</button>
     <p id="game-info-id" class="random-info"></p>
+    <div id="custom-names" class="custom-names-container">
+        <p class="custom-name">Player A:</p> <input type="text" id="65-name" class="custom-input">
+        <p class="custom-name">Player B:</p> <input type="text" id="66-name" class="custom-input">
+        <p class="custom-name">Player X:</p> <input type="text" id="88-name" class="custom-input">
+        <p class="custom-name">Player Y:</p> <input type="text" id="89-name" class="custom-input">
+    </div>
 </div>
 
 <div class="select-container">
@@ -35,10 +41,10 @@
     </div>
     <button id="next" class="next-button">ANSWER</button>
     <div class="player-buzz-container" id='buzz-container'>
-        <div class="player-icon" id="player-65">A - 1</div>
-        <div class="player-icon" id="player-66">B - 2</div>
-        <div class="player-icon" id="player-88">X - 3</div>
-        <div class="player-icon" id="player-89">Y - 4</div>
+        <div class="player-icon buzz-animate" id="player-65">A - 1</div>
+        <div class="player-icon buzz-animate" id="player-66">B - 2</div>
+        <div class="player-icon buzz-animate" id="player-88">X - 3</div>
+        <div class="player-icon buzz-animate" id="player-89">Y - 4</div>
     </div>
 </div>
 

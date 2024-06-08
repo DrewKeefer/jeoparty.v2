@@ -21,12 +21,32 @@ var jsonIndex = 0;
 var playerArray = [65,66,88,89];
 var buzzArray = [,,,,];
 var buzzOrder = 0;
+var buzzPenalty = 2.5;
 
 
 // #endregion
 
 // Loading seasons/games/categories & adding event listeners to grid
 // #region LOADING ASSETS
+
+// get player names
+
+function loadNames(){
+    let nameList = document.getElementsByClassName('custom-input');
+    let iconList = document.getElementById('buzz-container').children;
+    for (i = 0; i < nameList.length; i++){
+        iconList[i].innerHTML = nameList[i].value;
+        if(nameList[i].value === ""){
+            iconList[i].innerHTML = '???';
+        };
+    };
+
+    // remove random button and name inputs
+    document.getElementById('random-id').remove();
+    document.getElementById('game-info-id').remove();
+    document.getElementById('custom-names').remove();
+};
+
 
 async function getJSON(url) {
     let response = await fetch(url);
@@ -37,8 +57,7 @@ async function getJSON(url) {
 function loadButtonHandler(){
     if (gameState==0){
         if (isRandom==1){
-            document.getElementById('random-id').remove();
-            document.getElementById('game-info-id').remove();
+            loadNames();
             mainLoad();
             document.getElementsByClassName('splash')[0].style.zIndex = -10;
             document.getElementsByClassName('splash')[0].style.display = 'none';
@@ -77,6 +96,9 @@ function loadGame(){
         x.appendChild(t);
         document.getElementById("season-list").appendChild(x);
     };
+    // set player names
+    loadNames();
+
 
     addClickEventsToSeasonButtons();
     document.getElementsByClassName('splash')[0].style.display ='none';
@@ -166,7 +188,6 @@ function setCategories(stateData){
         allCategories[i].textContent = stateData.categories[i].name;
         // Add comment element if present
         if (stateData.categories[i].comments != ""){
-            console.log("adding comment things" )
             // add html code
             let marker = document.createElement("span");
             marker.className = "comment-marker";
@@ -189,7 +210,6 @@ function setCategories(stateData){
 // Main update function and progressing through question -> answer -> board
 // #region GAME PROGRESSION
 function mainLoad(){
-    console.log('loading')
     // check which data to load
     if (gameState == 0){ // single Jeopardy
         stateData.categories = gameData.categories.slice(0,6);
@@ -216,11 +236,12 @@ function mainLoad(){
         document.getElementById('splash-message').textContent = 'FINAL';
         let splashButton = document.getElementById('load-id');
         splashButton.textContent = 'LETS GO!';
+        // Get rid of buzzer bar
+        document.getElementById('time-bar').style.display = 'none';
         // Display the category
         document.getElementsByClassName('clue-screen')[0].style.display ='grid';
         document.getElementsByClassName('clue-clue')[0].textContent = stateData.categories[0].name;
-        let nextButton = document.getElementById('next');
-        nextButton.textContent = 'QUESTION';
+        nextButton.innerHTML = 'QUESTION';
         nextButton.onclick = (e) => {
             displayQuestion(0);
         };
@@ -231,17 +252,24 @@ function mainLoad(){
 }
 
 function displayQuestion(index) {
+    resetBuzzer(); // reset buzzer in case buzz occured on question screen
     document.getElementsByClassName('question')[index].classList.add('activated'); // hide selected question from board
     document.getElementsByClassName('question')[index].textContent ='';
     document.getElementsByClassName('clue-screen')[0].style.display ='grid';
     jsonIndex = (index % 5) * 6 + Math.floor(index/5);  // update jsonIndex to be from selected question
     document.getElementsByClassName('clue-clue')[0].textContent = stateData.clues[jsonIndex].clue;
     clueState = 2; // 2 -- viewing question clue
-    buzzerHandler(); // START BUZZ TIME
+
     // CHANGE BUTTON
     nextButton.style.color = 'white';
     nextButton.style.border = 'solid .3vmax white';
     nextButton.textContent = 'ANSWER'
+
+    if (gameState == 3){ // Disable buzzer for final jeoparty
+        buzzAllow = 1;
+        return
+    }
+    buzzerHandler(); // START BUZZ TIME
 }
 
 function displayAnswer(jsonIndex){
@@ -492,7 +520,8 @@ function buzzerHandler(){
     // get duration based on amount of words in clue
 
     let charNumber = ((stateData.clues[jsonIndex].clue).toString()).length;
-    let buzzerDuration = (60 * charNumber) / 775; 
+    let buzzerDuration = (60 * charNumber) / 775;
+    buzzerDuration = 1; // testing
     document.getElementById('time-bar').style.setProperty("--duration", buzzerDuration);
 
     // (The third argument is optional)
@@ -509,36 +538,52 @@ function allowBuzz(){
 
 // Main Buzz Function
 
-
 function mainBuzz(player){
+    if (clueState != 2 || gameState === 3){ // disable buzzing if not on question or on final jeopardy
+        return;
+    }
     let playerIndex = playerArray.indexOf(player);
     if (buzzAllow == 0){ // assign penalty
-        console.log('ITS NOT TIME YET');
         if (buzzArray[playerIndex] == undefined){
-            buzzArray[playerIndex] = 1.5;
-        }
-    };
-    if (buzzAllow == 1){ // allow buzzing in
-        if (buzzArray[playerIndex] == 1.5){
+            buzzArray[playerIndex] = buzzPenalty;
             if (buzzOrder == 0){
                 buzzArray[playerIndex] += .1;
             };
+
+            // meme audio
+            if (getRandomInt(0,20) < 1){
+                let audio = new Audio("/audio/notyet"+getRandomInt(1,4)+".mp3");
+                audio.play();
+            }
+            else{
+                let audio = new Audio("/audio/early.mp3")
+                audio.play();
+            }
+
+            let activePlayer = document.getElementById('player-'+player);
+            activePlayer.style.color = 'red';
             buzzArray[playerIndex] += buzzOrder;
             ++buzzOrder;
             sortBuzz(player);
-        }
+        };
+    };
+    if (buzzAllow == 1){ // no penalty
         if (buzzArray[playerIndex] == undefined){
+            let audio = new Audio("/audio/buzz.mp3");
+            audio.play();
             buzzArray[playerIndex] = 0 + buzzOrder;
             ++buzzOrder;
             sortBuzz(player);
-        }
+        };
     };
 }
 
 function sortBuzz(player){
     // make player visible when buzzing in
+
     let activePlayer = document.getElementById('player-'+player);
-    activePlayer.style.display = 'grid';
+    activePlayer.style.visibility = 'visible';
+    activePlayer.classList.remove('buzz-animate');
 
     // find players who have buzzed in
 
@@ -553,7 +598,7 @@ function sortBuzz(player){
     let activePlayersArray = [];
     for (i=0; i<buzzArray.length; i++){
         let toPush = 0;
-        if (buzzArray[i] > 1.5 || Number.isInteger(buzzArray[i]) == true){
+        if (buzzArray[i] > buzzPenalty || Number.isInteger(buzzArray[i]) == true){
             toPush = buzzArray[i];
         }
         else{
@@ -585,8 +630,10 @@ function resetBuzzer(){
     buzzAllow = 0;
     let playerElements = document.getElementById('buzz-container').children;
     for (i = 0; i < playerElements.length; i++){
-        playerElements[i].style.display = 'none';
+        playerElements[i].style.visibility = 'hidden';
+        playerElements[i].classList.add('buzz-animate');
         playerElements[i].style.gridRow = 4;
+        playerElements[i].style.color = 'white';
     };
 }
 
