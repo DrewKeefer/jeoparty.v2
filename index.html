@@ -6,49 +6,60 @@
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-
     <title>Jeoparty</title>
 </head>
 
 <body>
 
-
-<div class="splash" style="display: grid;">
-    <h1 id="splash-message">WELCOME TO</h1>
+<div class ="intro-splash" id="introSplash">
+    <p class="splash-message">WELCOME TO</p>
     <img class="titlecard" src="titlecard.png">
     <button id="load-id" class="load-game" onclick="loadButtonHandler()">LOAD GAME</button>
-    <button id="random-id" class="load-game random-button" onclick="loadRandomHandler()">RANDOM GAME</button>
+    <button id="random-id" class="random-button" onclick="randomGame()">RANDOM GAME</button>
+    <div class="buzz-toggler" onclick="toggleBuzz()">
+        <p>BUZZ MODE &ensp;</p>
+        <label class="switch">
+            <input type="checkbox" id="buzzToggler">
+            <span class="slider"></span>
+        </label>  
+    </div>
     <p id="game-info-id" class="random-info"></p>
     <div id="custom-names" class="custom-names-container">
         <p class="custom-name">Player A:</p> <input type="text" id="65-name" class="custom-input">
         <p class="custom-name">Player B:</p> <input type="text" id="66-name" class="custom-input">
         <p class="custom-name">Player X:</p> <input type="text" id="88-name" class="custom-input">
         <p class="custom-name">Player Y:</p> <input type="text" id="89-name" class="custom-input">
+        <p class="custom-name">Player L:</p> <input type="text" id="76-name" class="custom-input">
+        <p class="custom-name">Player R:</p> <input type="text" id="82-name" class="custom-input">
     </div>
 </div>
 
-<div class="select-container">
-    <div class="season-container" id="season-list">
-    </div>
-    <div class="game-container" id="game-list">
-    </div>
+<div class ="load-games-screen" id="loadGamesScreen">
+    <div class="season-container" id="season-list"></div>
+    <div class="game-container" id="game-list"></div>
 </div>
 
-<div class="clue-screen" style="display: none;">
-    <p class="clue-clue"></p>
+<div class="game-splash" id="gameSplash" style="display: none;">
+    <p class="splash-message" id="gameSplashMessage">WELCOME TO</p>
+    <img class="titlecard" src="titlecard.png">
+    <button class="splash-button" id="gameSplashButton" onclick="splashButtonHandler()">LET'S GO</button>
+</div>
+
+<div class="clue-screen" id="clueScreen" style="display: none;">
+    <p class="clue-clue" id="clueClue"></p>
     <div id="time-bar" class="round-time-bar" style="--duration: 1000;">
         <div></div>
     </div>
-    <button id="next" class="next-button">ANSWER</button>
+    <button id="mainButton" class="main-button" onclick="mainButtonHandler()">ANSWER</button>
     <div class="player-buzz-container" id='buzz-container'>
         <div class="player-icon buzz-animate" id="player-65">A - 1</div>
         <div class="player-icon buzz-animate" id="player-66">B - 2</div>
         <div class="player-icon buzz-animate" id="player-88">X - 3</div>
         <div class="player-icon buzz-animate" id="player-89">Y - 4</div>
+        <div class="player-icon buzz-animate" id="player-76">L - 5</div>
+        <div class="player-icon buzz-animate" id="player-82">R - 6</div>
     </div>
 </div>
-
-
 
 <div class="grid-container">
     <div class="category-container">
@@ -105,8 +116,6 @@
     <div class="question three">$600</div>
     <div class="question four">$800</div>
     <div class="question five">$1000</div>
-
-
 </div>
 
 </body>
