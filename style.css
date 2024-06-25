@@ -381,14 +381,16 @@ input:checked + .slider:before {
     color:white;
 }
 
+.activated{
+    background-color: #0712777c;
+}
+
 .selected{
     color: white;
     background-color: #FBA537;
 }
 
 /* CLUE SCREEN */
-
-/* Clue Screen */
 
 .clue-screen{
     position: fixed;
