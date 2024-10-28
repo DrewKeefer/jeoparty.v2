@@ -246,6 +246,7 @@ function displayQuestion(index){
     return;
   };
   document.getElementById('clueClue').textContent = stateData.clues[jsonIndex].clue;
+  resizeFont(); // update font size
   clueState = 1; // viewing question clue
 
   // CHANGE BUTTON
@@ -563,6 +564,18 @@ function fullScreenToggle(){
     } else if (elem.msRequestFullscreen) { /* IE11 */
       elem.msRequestFullscreen();
     }
+}
+
+function resizeFont() {
+  let charCount = stateData.clues[jsonIndex].clue.length;
+  let clueText = document.getElementById("clueClue");
+  if (charCount >= 132) {
+    let scaleFactor = 5 * (164/charCount);
+    clueText.style.fontSize = scaleFactor + "vmax";
+  }
+  else {
+    clueText.style.fontSize = "5vmax";
+  }
 }
 
 function getRandomInt(min, max) {

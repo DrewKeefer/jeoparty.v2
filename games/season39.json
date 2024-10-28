@@ -1,5 +1,310 @@
 [
   {
+    "game": "TEST",
+    "gameTitle": "TEST GAME",
+    "gameComments": "TROUBLESHOOTING",
+    "categories": [
+      {
+        "name": "CAT 1 - A",
+        "comments": ""
+      },
+      {
+        "name": "CAT 2 - A",
+        "comments": ""
+      },
+      {
+        "name": "CAT 3 - A",
+        "comments": ""
+      },
+      {
+        "name": "CAT 4 - A",
+        "comments": ""
+      },
+      {
+        "name": "CAT 5 - A",
+        "comments": ""
+      },
+      {
+        "name": "CAT 6 - A",
+        "comments": ""
+      },
+      {
+        "name": "CAT 1 - B",
+        "comments": "COMMENT"
+      },
+      {
+        "name": "CAT 2 - B",
+        "comments": ""
+      },
+      {
+        "name": "CAT 3 - B",
+        "comments": ""
+      },
+      {
+        "name": "CAT 4 - B",
+        "comments": ""
+      },
+      {
+        "name": "CAT 5 -B ",
+        "comments": ""
+      },
+      {
+        "name": "CAT 6 - B",
+        "comments": ""
+      },
+      {
+        "name": "FINAL",
+        "comments": ""
+      }
+    ],
+    "clues": [
+      {
+        "clue": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at mauris est. Vestibulum posuere velit massa, sed ullamcorper nunc ullamcorper eget. Mauris sem sapien, cursus quis dapibus a, ultricies ac diam.",
+        "answer": "211"
+      },
+      {
+        "clue": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at mauris est. Vestibulum posuere velit massa",
+        "answer": "110"
+      },
+      {
+        "clue": "With a white face mostly free of wool, the Columbia was developed by this Cabinet department in the early 1900s",
+        "answer": "Agriculture"
+      },
+      {
+        "clue": "In 2014 Decatur, Texas rescheduled this holiday back to the 30th, as it conflicted with Friday night high school football",
+        "answer": "Halloween"
+      },
+      {
+        "clue": "The ship Old Ironsides has bolts & sheathing made by this patriot & metalworker",
+        "answer": "Paul Revere"
+      },
+      {
+        "clue": "The speedy skating of 1940s NHL great Maurice Richard earned him this self-propelled nickname",
+        "answer": "the Rocket"
+      },
+      {
+        "clue": "In 1938 André Breton said the art of this Mexican painter \"is a ribbon around a bomb\"",
+        "answer": "Frida Kahlo"
+      },
+      {
+        "clue": "A good manager knows how to do this 8-letter word, transfer responsibility for specific tasks to their employees",
+        "answer": "delegate"
+      },
+      {
+        "clue": "Suffolk is popular both for lamb & this, meat from a sheep that's a yearling or older",
+        "answer": "mutton"
+      },
+      {
+        "clue": "Allemande left & take a chance / As you do this state folk dance / Swing yer partner & do-si-do / That's it for now, I got to go",
+        "answer": "square dance"
+      },
+      {
+        "clue": "In the classic children's song, she \"ain't what she used to be, many long years ago\"",
+        "answer": "the old gray mare"
+      },
+      {
+        "clue": "Sifan Hassan holds the women's world record in this track event: 4 minutes, 12.33 seconds",
+        "answer": "a mile"
+      },
+      {
+        "clue": "Kate McKinnon told the New York Times Magazine that this leader, \"to me, is a very emotional German\"",
+        "answer": "(Angela) Merkel"
+      },
+      {
+        "clue": "Referring to writers & others who are self-employed & work job to job, it was first used of mercenary knights",
+        "answer": "freelance"
+      },
+      {
+        "clue": "The North Ronaldsay, the Blackface & the Border Cheviot (with a black muzzle) are breeds first developed in this U.K. country",
+        "answer": "Scotland"
+      },
+      {
+        "clue": "This org. did not make Chuck Norris an honorary member until 2010, so could it have busted Chuck for impersonating an officer in the '90s?",
+        "answer": "the Texas Rangers"
+      },
+      {
+        "clue": "Buchanan, in this state, is a beautiful storybook town per Matthew Ramsay of the band Old Dominion who grew up there",
+        "answer": "Virginia"
+      },
+      {
+        "clue": "In 2017 the Minnesota Twins' Byron Buxton zoomed around the bases in 13.85 seconds on one of these exciting plays",
+        "answer": "in-the-park home run"
+      },
+      {
+        "clue": "A title from a 1974 article about this heiress read, \"From Self-Willed College Girl to Gun Toter\"",
+        "answer": "Patty Hearst"
+      },
+      {
+        "clue": "It's the controversial cost-saving practice of subcontracting services once done in-house to a third party",
+        "answer": "outsourcing"
+      },
+      {
+        "clue": "Sheep like the Dorper that shed & don't need shearing are called not wool, but this type, also a word before \"trigger\" or \"raising\"",
+        "answer": "hair"
+      },
+      {
+        "clue": "At least 1,800 men took on about 180 at this landmark in February & March of 1836, with predictable results",
+        "answer": "the Alamo"
+      },
+      {
+        "clue": "V.S.O.P., standing for very superior old pale, is a premium grade of this liquor aged at least 4 years",
+        "answer": "cognac"
+      },
+      {
+        "clue": "Jorge Masvidal used a flying knee strike to knock out his opponent in just 5 seconds at this event in 2019",
+        "answer": "the UFC (Ultimate Fighting Championship)"
+      },
+      {
+        "clue": "Nina Simone said this opera singer of Greek heritage \"was a fiery diva\" & she \"did what she wanted to do\"",
+        "answer": "Maria Callas"
+      },
+      {
+        "clue": "It's the 2-word Latin phrase meaning a particular way of doing something, work-wise or criminally related",
+        "answer": "modus operandi"
+      },
+      {
+        "clue": "Originally a Spanish breed, it first came to Australia in 1797 & changed that country's economy forever",
+        "answer": "the Merino"
+      },
+      {
+        "clue": "At dusk, hundreds of thousands of bats emerge from under the Ann Richards Congress Avenue Bridge in this city",
+        "answer": "Austin"
+      },
+      {
+        "clue": "An unfulfilled claimant to the British throne, in the 18th century James Edward Stuart was known as the \"Old\" one of these",
+        "answer": "the Old Pretender"
+      },
+      {
+        "clue": "Driving jet-propelled cars, Craig Breedlove repeatedly broke the world land speed record at this Utah spot in the 1960s",
+        "answer": "Bonneville (Salt) Flats"
+      },
+      {
+        "clue": "He introduced a bill to limit the death penalty while a member of the Virginia legislature",
+        "answer": "Thomas Jefferson"
+      },
+      {
+        "clue": "Thomas Hardy gave up writing fiction after this gloomy novel about Jude Fawley",
+        "answer": "Jude the Obscure"
+      },
+      {
+        "clue": "One of its anthems includes the lyrics, \"iwi Maori, pakeha, rupeke katoa\"",
+        "answer": "New Zealand"
+      },
+      {
+        "clue": "It's often said that this is \"the best medicine\"--it's fun to share, adds joy to life & it relieves stress",
+        "answer": "laughter"
+      },
+      {
+        "clue": "This late, great actor excelled at playing movie villains",
+        "answer": "Rickman"
+      },
+      {
+        "clue": "The American Cancer Society says, \"Stay away from\" this, \"quitting... is not easy but it can be done\"",
+        "answer": "tobacco"
+      },
+      {
+        "clue": "He was the first to breed mules in America on his farm",
+        "answer": "George Washington"
+      },
+      {
+        "clue": "Perhaps wandering lonely as a cloud, this poet was inspired to pen \"Daffodils\" about the flowers he saw at Lake Ullswater",
+        "answer": "Wordsworth"
+      },
+      {
+        "clue": "Again the U.K.'s anthem, \"God Save The King\" says, \"send him victorious... &\" this splendid word that rhymes with victorious",
+        "answer": "glorious"
+      },
+      {
+        "clue": "Doing this before bed can help you sleep better; try the bridge or legs up the wall poses",
+        "answer": "yoga"
+      },
+      {
+        "clue": "This redhead was nominated for a Best Supporting Actress Oscar for \"The Help\" but lost out to castmate Octavia Spencer",
+        "answer": "Chastain"
+      },
+      {
+        "clue": "In the 5 stages of grief, it comes last",
+        "answer": "acceptance"
+      },
+      {
+        "clue": "He was born in the British West Indies",
+        "answer": "Hamilton"
+      },
+      {
+        "clue": "Elizabeth Gaskell's 1855 novel \"North & South\" depicts this British city as a cotton-spinning hellmouth, calling it \"Milton\"",
+        "answer": "Manchester"
+      },
+      {
+        "clue": "Rabindranath Tagore wrote the anthems of these 2 countries, one independent since 1947, one since 1971",
+        "answer": "India & Bangladesh"
+      },
+      {
+        "clue": "You're advised to brush your teeth & floss daily because of a link between heart disease & this 11-letter type of gum disease",
+        "answer": "periodontal disease"
+      },
+      {
+        "clue": "After winning an Oscar in 2023, he exclaimed, \"Goonies never say die!\"",
+        "answer": "Ke Huy Quan"
+      },
+      {
+        "clue": "It begins as a hot dry desert wind over northern Africa before picking up moisture as it crosses the Mediterranean",
+        "answer": "a sirocco"
+      },
+      {
+        "clue": "He published a feminist tract written under the pseudonym Silence Dogood",
+        "answer": "Franklin"
+      },
+      {
+        "clue": "In the 1850s she published the book-length love poem \"Aurora Leigh\"",
+        "answer": "Elizabeth Barrett Browning"
+      },
+      {
+        "clue": "This anthem was made official in a decree of July 14, 1795",
+        "answer": "\"The Marseillaise\""
+      },
+      {
+        "clue": "Short on time but want to get in a good workout? Some people enjoy this form of exercise, HIIT for short, but don't overdo it",
+        "answer": "high intensity interval training"
+      },
+      {
+        "clue": "In \"A Fish Called Wanda\", John Cleese played Archie Leach, actually the real name of this movie star",
+        "answer": "Cary Grant"
+      },
+      {
+        "clue": "Behold the man, of suffering Christ in the painting called this, seen here",
+        "answer": "Ecce Homo"
+      },
+      {
+        "clue": "He died on April 15",
+        "answer": "Abraham Lincoln"
+      },
+      {
+        "clue": "Her scary story \"The Birds\" became a scary big-screen thriller",
+        "answer": "(Daphne) du Maurier"
+      },
+      {
+        "clue": "The music of Germany's anthem was composed by this Austrian for the 1797 birthday of the Holy Roman Emperor",
+        "answer": "Haydn"
+      },
+      {
+        "clue": "Plain & simple, give someone a hug; it releases these feel-good hormones, named in part for a narcotic",
+        "answer": "endorphins"
+      },
+      {
+        "clue": "This Canadian doesn't just act: she also wrote & directed \"Women Talking\"",
+        "answer": "Sarah Polley"
+      },
+      {
+        "clue": "In medicine it's the complete or partial obstruction of a blood vessel, especially an artery",
+        "answer": "occlusion"
+      },
+      {
+        "clue": "Theories on the origin of this, a style of journalism, include Cajun slang for unhinged jazz & Boston slang for a person on a bender",
+        "answer": "gonzo"
+      }
+    ]
+  },
+  {
     "game": "8342",
     "gameTitle": "Show #8925 - Friday, July 28, 2023",
     "gameComments": "Last game of Season 39.",

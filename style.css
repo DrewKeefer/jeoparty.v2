@@ -410,7 +410,7 @@ input:checked + .slider:before {
     text-shadow: .4vmax .25vmax .1vmax black;
     font-family: Georgia, serif;
     text-transform: uppercase;
-    overflow: visible;
+    overflow: hidden;
     align-items: center;
     justify-self: center;
     text-align: center;
