@@ -1,4 +1,4 @@
-/* Main */
+#/* Main */
 
 body{
     font-family: Verdana, sans-serif;
@@ -418,7 +418,7 @@ input:checked + .slider:before {
 
 .main-button{
     position: fixed;
-    bottom: 5vh;
+    bottom: 10vh;
     right: 40vw;
     width: 20vw;
     height: 7vh;
