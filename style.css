@@ -418,10 +418,12 @@ input:checked + .slider:before {
 
 .main-button{
     position: fixed;
-    bottom: 10vh;
+    bottom: 5vh;
     right: 40vw;
     width: 20vw;
-    height: 7vh;
+    height: 3vh;
+    margin: 0px;
+    z-index: 10;
     align-self: start;
     justify-self: center;
     font-family: Georgia, serif;
