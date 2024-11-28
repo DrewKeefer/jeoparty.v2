@@ -574,7 +574,7 @@ function resizeFont() {
   let charCount = stateData.clues[jsonIndex].clue.length;
   let clueText = document.getElementById("clueClue");
   if (charCount >= 132) {
-    let scaleFactor = 5 * (164/charCount);
+    let scaleFactor = 5 * (132/charCount);
     clueText.style.fontSize = scaleFactor + "vmax";
   }
   else {
