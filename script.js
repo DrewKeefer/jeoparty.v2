@@ -269,6 +269,9 @@ function mainButtonHandler(){
   if (clueState === 1){ // viewing clue
     displayAnswer(jsonIndex);
   }
+  else if (clueState === 0 && gameState === 2){
+    displayQuestion(jsonIndex);
+  }
   else if (clueState === 2){ // viewing answer
     // CHECK IF GAME IS OVER
     if (gameState === 2){
@@ -420,7 +423,8 @@ function mainBuzz(player){
   };
 
   // sort the array
-  let sortedArray = buzzArray.toSorted();
+  let sortedArray = buzzArray.slice(); // copies without reference
+  sortedArray = sortedArray.sort(function(a, b){return a - b});
   let rankArray = [];
   sortedArray.forEach((element,index) => rankArray[buzzArray.indexOf(element)] = 1 + index);
 
@@ -446,7 +450,7 @@ function resetBuzzer(){
   for (i = 0; i < playerElements.length; i++){
       playerElements[i].style.visibility = 'hidden';
       playerElements[i].classList.add('buzz-animate');
-      playerElements[i].style.gridRow = 4;
+      playerElements[i].style.gridRow = 6;
       playerElements[i].style.color = 'white';
   };
 }
