@@ -421,9 +421,8 @@ input:checked + .slider:before {
     bottom: 5vh;
     right: 40vw;
     width: 20vw;
-    height: 3vh;
+    height: 7vh;
     margin: 0px;
-    z-index: 10;
     align-self: start;
     justify-self: center;
     font-family: Georgia, serif;
