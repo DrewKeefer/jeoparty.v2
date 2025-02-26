@@ -11,6 +11,7 @@ var gameState = 0; // 0 -- single jeopardy, 1 -- double jeopardy, 2 -- final jeo
 var clueState = 0; // 0 -- on grid, 1 -- on clue screen, 2 -- on answer screen, 5 -- splash screen
 var jsonIndex = 0;
 var playerArray = [65,66,88,89,76,82];
+var scoreArray = [0,0,0,0,0,0]
 var buzzArray = [,,,,,,];
 var mainButton = document.getElementById('mainButton');
 var duration = 0;
@@ -129,10 +130,14 @@ function loadGame() {
   else if (gameState === 0) { // LOAD PLAYER NAMES
     let nameList = document.getElementsByClassName('custom-input');
     let iconList = document.getElementById('buzz-container').children;
+    let scoreListNames = document.getElementsByClassName('score-name');
+    let scoreRows = document.getElementById('score-container').children;
     for (i = 0; i < nameList.length; i++){
         iconList[i].innerHTML = nameList[i].value;
+        scoreListNames[i].innerHTML = nameList[i].value;
         if(nameList[i].value === ""){
             iconList[i].innerHTML = '???';
+            scoreRows[i].style.visibility = 'hidden';
         };
     };
   };
@@ -259,10 +264,20 @@ function displayQuestion(index){
 
 function displayAnswer(jsonIndex){
   buzzerHandler(true);
-  resetBuzzer();
   mainButton.textContent = 'BACK';
   document.getElementById('clueClue').textContent = stateData.clues[jsonIndex].answer;
   clueState = 2; // 2 -- viewing question answer
+
+  if (buzzEnabled == true){
+    // change buzzed color to white
+    let playerElements = document.getElementById('buzz-container').children;
+    for (i = 0; i < playerElements.length; i++){
+        playerElements[i].style.color = 'white';
+    };
+
+    document.getElementById('score-container').style.display = 'grid';
+  }
+
 }
 
 function mainButtonHandler(){
@@ -279,8 +294,10 @@ function mainButtonHandler(){
     }
 
     // RETURN TO BOARD
+    resetBuzzer();
     clueState = 0;
     document.getElementById('clueScreen').style.display ='none';
+    document.getElementById('score-container').style.display = 'none';
 
     // Check if all questions have been activated
     if(document.getElementsByClassName('activated').length == 30){
@@ -384,7 +401,7 @@ function buzzerHandler(boolFlag){
 
   // get duration based on amount of words in clue
   let charNumber = ((stateData.clues[jsonIndex].clue).toString()).length;
-  duration = (60 * charNumber) / 850;
+  duration = Math.min( (60 * charNumber / 850), 10);
   document.getElementById('time-bar').style.setProperty("--duration", duration);
 
   ticker = new AdjustingInterval(doWork, 20, doError, duration);
@@ -398,7 +415,13 @@ function mainBuzz(player){
     return;
   };
   if (clueState != 1){ // disable buzzing if not on question screen
-    return;
+    if (clueState = 2){
+      calcScore(playerArray.indexOf(player));
+      return
+    }
+    else{
+      return;
+    }
   };
   let playerIndex = playerArray.indexOf(player);
   if (buzzArray[playerIndex] !== undefined){ // dont let players buzz twice
@@ -436,6 +459,34 @@ function mainBuzz(player){
       };
       playerElements[i].style.gridRow = rankArray[i];
   };
+}
+
+function calcScore(player){
+  let clueValue = Math.ceil(jsonIndex / 6 + 0.01) * 200 * (1 + gameState);
+  let playerElements = document.getElementById('buzz-container').children;
+  let thisPlayerElement = playerElements[player];
+  if (thisPlayerElement.style.visibility == 'visible'){
+    // if white change to green
+    if (thisPlayerElement.style.color == 'white'){
+      thisPlayerElement.style.color = 'green';
+      scoreArray[player] += clueValue;
+    }
+    // if green change to red
+    else if (thisPlayerElement.style.color == 'green'){
+      thisPlayerElement.style.color = 'red';
+      scoreArray[player] -= 2 * clueValue
+    }
+    // if red, change to green
+    else if (thisPlayerElement.style.color == 'red'){
+      thisPlayerElement.style.color = 'white';
+      scoreArray[player] += clueValue
+    }
+  };
+
+  let scoreListNames = document.getElementsByClassName('score-value');
+  for (i = 0; i < scoreListNames.length; i++){
+    scoreListNames[i].innerHTML = scoreArray[i];
+  }
 }
 
 function resetBuzzer(){
