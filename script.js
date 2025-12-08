@@ -4,6 +4,28 @@
 const FIRST_SEASON = 32;
 const LAST_SEASON = 39;
 
+const keyMap = {
+  ArrowLeft: () => moveLeft(),
+  ArrowRight: () => moveRight(),
+  ArrowDown: () => moveDown(),
+  ArrowUp: () => moveUp(),
+  Space: () => spacebarHandler(),
+  KeyA: () => mainBuzz(65),
+  KeyB: () => mainBuzz(66),
+  KeyX: () => mainBuzz(88),
+  KeyY: () => mainBuzz(89),
+  KeyL: () => mainBuzz(76),
+  KeyR: () => mainBuzz(82)
+};
+
+document.addEventListener("keydown", (e) => {
+  const handler = keyMap[e.code];
+  if (handler) {
+    e.preventDefault();
+    handler();
+  }
+});
+
 var gameData = {};
 var stateData = {};
 var isRandom = 0; // 0 for normal load, 1 for random game load
@@ -521,60 +543,32 @@ $(document).ready(function () {
     highlightCell();
 });
 
-$(window).on('keydown', function (e) {
-
-    // GRID NAVIGATION
-    if (e.keyCode === 37) {// left
-        moveLeft();}
-    else if (e.keyCode === 38){ // up
-        moveUp();}
-    else if (e.keyCode === 39){ // right
-        moveRight();}
-    else if (e.keyCode === 40){ // down
-        moveDown();}
-    else if (e.keyCode === 32){ // spacebar handler
-        spacebarHandler();}
-    else if (e.keyCode === 70){ // F key
-        fullScreenToggle();}
-
-    // BUZZING
-    else if (e.keyCode === 65){ // a key
-        mainBuzz(e.keyCode);}
-    else if (e.keyCode === 66){ // b key
-        mainBuzz(e.keyCode);}
-    else if (e.keyCode === 76){ // l key
-        mainBuzz(e.keyCode);}
-    else if (e.keyCode === 82){ // r key
-        mainBuzz(e.keyCode);}
-    else if (e.keyCode === 88){ // x key
-        mainBuzz(e.keyCode);}
-    else if (e.keyCode === 89){ // y key
-        mainBuzz(e.keyCode);};
-    highlightCell();
-});
-
 function moveLeft() {
     position.x-=5;
     if (position.x < 0){
         position.x+=5};
+    highlightCell()
 };
 
 function moveUp() {
     position.x--;
     if (position.x < 0){
         position.x = 0};
+    highlightCell()
 };
 
 function moveRight() {
     position.x+=5;
     if (position.x >= questionMap[0].length){
         position.x-=5};
+    highlightCell()
 };
 
 function moveDown() {
     position.x++;
     if (position.x >= questionMap[0].length){
         position.x = questionMap[0].length - 1};
+    highlightCell()
 };
 
 function highlightCell() {
