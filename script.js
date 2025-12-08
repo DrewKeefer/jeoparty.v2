@@ -10,6 +10,7 @@ const keyMap = {
   ArrowDown: () => moveDown(),
   ArrowUp: () => moveUp(),
   Space: () => spacebarHandler(),
+  KeyF: () => fullScreenToggle(),
   KeyA: () => mainBuzz(65),
   KeyB: () => mainBuzz(66),
   KeyX: () => mainBuzz(88),
@@ -21,7 +22,6 @@ const keyMap = {
 document.addEventListener("keydown", (e) => {
   const handler = keyMap[e.code];
   if (handler) {
-    e.preventDefault();
     handler();
   }
 });
@@ -33,8 +33,9 @@ var gameState = 0; // 0 -- single jeopardy, 1 -- double jeopardy, 2 -- final jeo
 var clueState = 0; // 0 -- on grid, 1 -- on clue screen, 2 -- on answer screen, 5 -- splash screen
 var jsonIndex = 0;
 var playerArray = [65,66,88,89,76,82];
-var scoreArray = [0,0,0,0,0,0]
-var buzzArray = [,,,,,,];
+var scoreArray = [0,0,0,0,0,0];
+var buzzArray = [,,,,,];
+var lockoutEndArray = [0,0,0,0,0,0];
 var mainButton = document.getElementById('mainButton');
 var duration = 0;
 var buzzEnabled = false;
@@ -163,6 +164,26 @@ function loadGame() {
         };
     };
   };
+
+
+  // Check if device is mobile
+  if( (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) && (buzzEnabled === true) ) {
+    console.log("MOBILE DEVICE DETECTED");
+    document.getElementById('mobile-buzz').addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      let touchX = ( e.touches[0].clientX );
+      if (touchX < window.innerWidth / 2){
+        mainBuzz(65); // Player A
+      }
+      else{
+        mainBuzz(66); // Player B
+      };
+    });
+  }
+  else {
+    document.getElementById('mobile-buzz').remove();
+  }
+
   if (gameState === 0){ // SINGLE JEOPARDY
     stateData.categories = gameData.categories.slice(0,6);
     stateData.clues = gameData.clues.slice(0,30);
@@ -245,6 +266,7 @@ function engageFinal(){
   // Show splash screen and change message
   document.getElementById('gameSplash').style.display ='flex';
   document.getElementById('gameSplashMessage').textContent = 'FINAL';
+  document.getElementById('time-bar').style.display = 'none';
   // Progress gameState and display category
   mainButton.innerHTML = 'QUESTION';
   document.getElementById('clueScreen').style.display ='grid';
@@ -436,33 +458,53 @@ function mainBuzz(player){
   if (buzzEnabled === false){
     return;
   };
-  if (clueState != 1){ // disable buzzing if not on question screen
-    if (clueState = 2){
+
+  if ((clueState !== 1) || (gameState === 2)){ // disable buzzing if not on question screen or if in final jeopardy
+    if (clueState === 2){
       calcScore(playerArray.indexOf(player));
-      return
-    }
-    else{
       return;
     }
+    else{ 
+      return;
+    };
   };
+
   let playerIndex = playerArray.indexOf(player);
-  if (buzzArray[playerIndex] !== undefined){ // dont let players buzz twice
-    return;
-  };
-  // make player visible when buzzing in
   let activePlayer = document.getElementById('player-'+player);
-  activePlayer.style.visibility = 'visible';
-  activePlayer.classList.remove('buzz-animate');
-  // assign score to buzzArray
   let normalizedTime = tickerCount / 50;
+
   if (normalizedTime < duration){ // if buzzed in early
-    buzzArray[playerIndex] = duration + .5 + (Math.random() / 1000);
+    lockoutEndArray[playerIndex] = performance.now() + 500; // half a second lockout
     activePlayer.style.color = 'red';
     // meme audio
     if (getRandomInt(0,20) < 1){
       memeAudio.play();
     }
   };
+
+  if (performance.now() < lockoutEndArray[playerIndex]){ // check for lockout
+    return;
+  };
+
+  if (buzzArray[playerIndex] !== undefined){ // dont let players buzz twice
+    return;
+  };
+
+  // make player visible when buzzing in
+  activePlayer.style.visibility = 'visible';
+  activePlayer.classList.remove('buzz-animate');
+
+
+  // if (normalizedTime < duration){ // if buzzed in early
+  //   buzzArray[playerIndex] = duration + 1.0 + (Math.random() / 1000);
+  //   activePlayer.style.color = 'red';
+  //   // meme audio
+  //   if (getRandomInt(0,20) < 1){
+  //     memeAudio.play();
+  //   }
+  // };
+
+  // assign score to buzzArray
   if (normalizedTime >= duration - .01){ // if buzzed in on time
     buzzArray[playerIndex] = normalizedTime + (Math.random() / 100000); // add random value to prevent ties
   };
@@ -516,6 +558,7 @@ function resetBuzzer(){
     return;
   };
   playerArray = [65,66,88,89,76,82];
+  lockoutEndArray = [0,0,0,0,0,0];
   buzzArray = [,,,,];
   buzzOrder = 0;
   buzzAllow = 0;
@@ -633,13 +676,16 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
 }
 
-function sleep(milliseconds) {
+function sleep(milliseconds, playerIndex) {
   var start = new Date().getTime();
   for (var i = 0; i < 1e7; i++) {
     if ((new Date().getTime() - start) > milliseconds){
+      console.log(playerIndex);
       break;
     }
   }
 }
+
+
 
 // #endregion
