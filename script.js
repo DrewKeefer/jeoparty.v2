@@ -168,7 +168,6 @@ function loadGame() {
 
   // Check if device is mobile
   if( (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) && (buzzEnabled === true) ) {
-    console.log("MOBILE DEVICE DETECTED");
     document.getElementById('mobile-buzz').addEventListener('touchstart', function(e) {
       e.preventDefault();
       let touchX = ( e.touches[0].clientX );

@@ -1,0 +1,20 @@
+{
+  "name": "Jeoparty",
+  "short_name": "Jeoparty",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#071277",
+  "theme_color": "#FBA537",
+  "icons": [
+    {
+      "src": "/jeoparty_icon_192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/jeoparty_icon_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
