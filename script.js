@@ -2,7 +2,7 @@
 // #region GLOBAL VARIABLES
 
 const FIRST_SEASON = 32;
-const LAST_SEASON = 39;
+const LAST_SEASON = 42;
 
 const keyMap = {
   ArrowLeft: () => moveLeft(),

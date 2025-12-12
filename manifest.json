@@ -3,6 +3,7 @@
   "short_name": "Jeoparty!",
   "start_url": "/index.html",
   "display": "standalone",
+  "orientation": "landscape-primary",
   "background_color": "#071277",
   "theme_color": "#FBA537",
   "icons": [
