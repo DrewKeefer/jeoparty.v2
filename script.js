@@ -167,7 +167,10 @@ function loadGame() {
 
 
   // Check if device is mobile
-  if( (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) && (buzzEnabled === true) ) {
+  if (gameState !== 0){
+    return
+  }
+  else if( (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) && (buzzEnabled === true) ) {
     document.getElementById('mobile-buzz').addEventListener('touchstart', function(e) {
       e.preventDefault();
       let touchX = ( e.touches[0].clientX );
@@ -181,7 +184,7 @@ function loadGame() {
   }
   else {
     document.getElementById('mobile-buzz').remove();
-  }
+  };
 
   if (gameState === 0){ // SINGLE JEOPARDY
     stateData.categories = gameData.categories.slice(0,6);
