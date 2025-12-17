@@ -167,10 +167,7 @@ function loadGame() {
 
 
   // Check if device is mobile
-  if (gameState !== 0){
-    return
-  }
-  else if( (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) && (buzzEnabled === true) ) {
+  if( (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) && (buzzEnabled === true) ) {
     document.getElementById('mobile-buzz').addEventListener('touchstart', function(e) {
       e.preventDefault();
       let touchX = ( e.touches[0].clientX );
@@ -183,7 +180,9 @@ function loadGame() {
     });
   }
   else {
-    document.getElementById('mobile-buzz').remove();
+    if (document.getElementById('mobile-buzz')){
+      document.getElementById('mobile-buzz').remove();
+    };
   };
 
   if (gameState === 0){ // SINGLE JEOPARDY
@@ -268,7 +267,9 @@ function engageFinal(){
   // Show splash screen and change message
   document.getElementById('gameSplash').style.display ='flex';
   document.getElementById('gameSplashMessage').textContent = 'FINAL';
-  document.getElementById('time-bar').style.display = 'none';
+  if (document.getElementById('time-bar')){
+    document.getElementById('time-bar').style.display = 'none';
+  };
   // Progress gameState and display category
   mainButton.innerHTML = 'QUESTION';
   document.getElementById('clueScreen').style.display ='grid';
