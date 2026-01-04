@@ -163,25 +163,24 @@ function loadGame() {
             scoreRows[i].style.visibility = 'hidden';
         };
     };
-  };
 
-
-  // Check if device is mobile
-  if( (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) && (buzzEnabled === true) ) {
-    document.getElementById('mobile-buzz').addEventListener('touchstart', function(e) {
-      e.preventDefault();
-      let touchX = ( e.touches[0].clientX );
-      if (touchX < window.innerWidth / 2){
-        mainBuzz(65); // Player A
-      }
-      else{
-        mainBuzz(66); // Player B
+    // Check if device is mobile
+    if( (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) && (buzzEnabled === true) ) {
+      document.getElementById('mobile-buzz').addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        let touchX = ( e.touches[0].clientX );
+        if (touchX < window.innerWidth / 2){
+          mainBuzz(65); // Player A
+        }
+        else{
+          mainBuzz(66); // Player B
+        };
+      });
+    }
+    else {
+      if (document.getElementById('mobile-buzz')){
+        document.getElementById('mobile-buzz').remove();
       };
-    });
-  }
-  else {
-    if (document.getElementById('mobile-buzz')){
-      document.getElementById('mobile-buzz').remove();
     };
   };
 
